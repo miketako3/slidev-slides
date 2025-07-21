@@ -3,6 +3,7 @@ import {join} from 'path';
 
 const slidesDir = join(process.cwd(), 'slides');
 const distDir = join(process.cwd(), 'dist');
+const basePath = "/slidev-slides"
 
 /**
  * 特定のスライドディレクトリをビルドし、成果物をコピーする関数
@@ -18,7 +19,7 @@ async function buildSlide(slideDir) {
         // Bun.spawnを使用してビルドコマンドを実行
         // コマンドと引数を配列で渡す
         const proc = Bun.spawn(
-            ['bun', 'slidev', 'build', '--out', 'dist', '--base', `/slidev-slides/${slideDir}/`],
+            ['bun', 'slidev', 'build', '--out', 'dist', '--base', `${basePath}/${slideDir}/`],
             {
                 cwd: slidePath, // 作業ディレクトリを指定
                 stdout: 'inherit', // 標準出力を親プロセスに流す

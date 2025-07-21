@@ -1,5 +1,7 @@
 # slidev-slides
 
+https://miketako3.github.io/slidev-slides/
+
 [slidev](https://ja.sli.dev/) を用いたスライドをモノレポで管理するリポジトリ。
 
 ## ディレクトリ構成

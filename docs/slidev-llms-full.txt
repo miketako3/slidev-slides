@@ -1,0 +1,4742 @@
+# https://ja.sli.dev/ llms-full.txt
+
+## Slidev Presentation Tool
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Animation Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) アニメーション
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) クリックアニメーション
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-click) `v-click`
+
+要素に対して"クリックアニメーション"を適用するには、 `v-click` ディレクティブか `<v-click>` コンポーネントを使用することができます。
+
+```
+# Hello
+
+<!-- コンポーネントの使い方: "次へ"を押すまで、ここから下の内容は表示されません -->
+<v-click>
+
+Hello World
+
+</v-click>
+
+<!-- ディレクティブの使い方: 2回目の"次へ"を押すまで、ここから下の内容は表示されません -->
+<div v-click class="text-xl p-2">
+
+Hey!
+
+</div>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-after) `v-after`
+
+`v-after` は `v-click` に似ていますが、直前の `v-click` がトリガーされたときに要素を可視化します。
+
+```
+<div v-click>Hello</div>
+<div v-after>World</div>
+
+```
+
+"次へ"ボタンを押した時に、 `Hello` と `World` の両方が一緒に表示されます。
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-click-hide) `v-click-hide`
+
+`v-click` と同じですが、要素を表示するのではなく、クリックした後に要素を非表示にします。
+
+```
+<div v-click-hide>Hello</div>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-clicks) `v-clicks`
+
+`v-clicks` はコンポーネントとしてのみ提供されています。これは `v-click` ディレクティブをそのすべての子要素に適用するためのショートハンドです。特にリストを扱う場合に便利です。
+
+```
+<v-clicks>
+
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+
+</v-clicks>
+
+```
+
+"次へ"をクリックするたびに、項目が表示されるようになります。
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88) カスタムクリックカウント
+
+デフォルトでは、Slidevは次のスライドに進む前に必要なステップ数をカウントします。 `clicks` というフロントマターオプションを記述することで、この設定をオーバーライドできます。
+
+```
+---
+# このスライドでは、次のスライドに進むまでに10回クリックする
+clicks: 10
+---
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E4%B8%A6%E3%81%B3%E6%9B%BF%E3%81%88) 並び替え
+
+ディレクティブにクリックインデックスを渡すことで、公開する順番をカスタマイズすることができます。
+
+```
+<div v-click>1</div>
+<div v-click>2</div>
+<div v-click>3</div>
+
+```
+
+```
+<!-- 順番が逆転する -->
+<div v-click="3">1</div>
+<div v-click="2">2</div>
+<div v-click="1">3</div>
+
+```
+
+```
+---
+clicks: 3
+---
+
+<!-- 3回クリックした後に見えるようになる -->
+<v-clicks at="3">
+  <div>Hi</div>
+</v-clicks>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E8%A6%81%E7%B4%A0%E3%81%AE%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B8%E3%82%B7%E3%83%A7%E3%83%B3) 要素のトランジション
+
+要素に `v-click` ディレクティブを適用すると、 `slidev-vclick-target` というクラス名が付与されます。要素が非表示になった場合、クラス名 `slidev-vclick-hidden` が付与されます。例：
+
+```
+<div class="slidev-vclick-target slidev-vclick-hidden">テキスト</div>
+
+```
+
+クリックすると、以下のようになります
+
+```
+<div class="slidev-vclick-target">テキスト</div>
+
+```
+
+デフォルトでは、これらのクラスにはわずかな透明度のトランジションが適用されます。
+
+```
+// デフォルト
+
+.slidev-vclick-target {
+  transition: opacity 100ms ease;
+}
+
+.slidev-vclick-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+```
+
+トランジション効果をカスタマイズするために、カスタムスタイルシートでそれらをオーバーライドすることができます。
+
+例えば、スケールアップのトランジションは次のようにして実現することができます：
+
+```
+// styles.css
+
+.slidev-vclick-target {
+  transition: all 500ms ease;
+}
+
+.slidev-vclick-hidden {
+  transform: scale(0);
+}
+
+```
+
+特定のスライドもしくはレイアウトにのみアニメーションを適用する場合
+
+```
+.slidev-page-7,
+.slidev-layout.my-custom-layout {
+  .slidev-vclick-target {
+    transition: all 500ms ease;
+  }
+
+  .slidev-vclick-hidden {
+    transform: scale(0);
+  }
+}
+
+```
+
+詳細は [スタイルのカスタマイズ](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) モーション
+
+Slidevは [@vueuse/motion](https://motion.vueuse.org/) を内蔵しています。任意の要素にモーションを適用するために `v-motion` ディレクティブを使用することができます。例：
+
+```
+<div
+  v-motion
+  :initial="{ x: -80 }"
+  :enter="{ x: 0 }">
+  Slidev
+</div>
+
+```
+
+`Slidev` というテキストは初期化時に `-80px` から元の位置へ移動します。
+
+> 注: Slidevはパフォーマンスのために次のスライドをプリロードします、つまり、ページに遷移する前にアニメーションが始まる可能性があります。正しく動作させるために、特定のスライドに対してプリロードを無効にすることができます。
+>
+> ```
+> ---
+> preload: false
+> ---
+>
+> ```
+>
+> もしくは要素のライフサイクルを `v-if` で制御することで、きめ細やかな制御を行うこともできます。
+>
+> ```
+> <div
+>   v-if="$slidev.nav.currentPage === 7"
+>   v-motion
+>   :initial="{ x: -80 }"
+>   :enter="{ x: 0 }">
+>   Slidev
+> </div>
+>
+> ```
+
+詳細： [デモ](https://sli.dev/demo/starter/7) \| [@vueuse/motion](https://motion.vueuse.org/) \| [v-motion](https://motion.vueuse.org/directive-usage.html) \| [Presets](https://motion.vueuse.org/presets.html)
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B8%E3%82%B7%E3%83%A7%E3%83%B3) ページのトランジション
+
+> 現在のバージョンでは、スライドのビルトインサポートはまだ提供されていません。次のメジャーバージョンでサポートする予定です。それまでは、カスタムスタイルやライブラリを使ってスライドを作成することができます。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Customization Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA) カスタマイズ
+
+Slidevは、スタイリングからツールの設定まで、フルカスタマイズが可能です。Slidevの配下にあるツール（ [Vite](https://ja.sli.dev/custom/config-vite)、 [Windi CSS](https://ja.sli.dev/custom/config-windicss)、 [Monaco](https://ja.sli.dev/custom/config-monaco) など）を設定することが可能です。
+
+## [\#](https://ja.sli.dev/custom/\#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) フロントマターの設定
+
+最初のスライドのフロントマターで、Slidevの設定をすることができます。以下に各オプションのデフォルト値を示しています。
+
+```
+---
+# テーマのIDもしくはパッケージ名
+theme: 'default'
+# スライドのタイトル 指定されていない場合、最初のヘッダーから自動的に推測されます。
+title: ''
+# webページのタイトルテンプレート `%s`は各ページのタイトルで置き換えられます。
+titleTemplate: '%s - Slidev'
+
+# SPAビルドにおけるPDFダウンロードを有効化します。カスタムURLを使用することも可能です。
+download: true
+# シンタックスハイライト 'prism'か'shiki'が選択可能です。
+highlighter: 'prism'
+# コードブロックに行番号を表示します。
+lineNumbers: false
+# Monacoエディタを有効化します。デフォルトでは開発環境のみ有効です。
+monaco: 'dev'
+
+# スライドのカラースキーマを変更します。'auto'、'light'または'dark'を指定可能です。
+colorSchema: 'auto'
+# vue-routerのためのrouterModeを指定します。"history"または"hash"が指定可能です。
+routerMode: 'history'
+# スライドのアスペクト比を指定します。
+aspectRatio: '16/9'
+# canvasの実際の横幅を指定します。単位はpxです。
+canvasWidth: 980
+
+# faviconにはローカルファイルのパスか、URLを使用できます。
+favicon: 'https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png'
+# フォントはGoogle Fontsから自動的にimportされます。
+# 詳細: https://sli.dev/custom/fonts
+fonts:
+  sans: 'Roboto'
+  serif: 'Roboto Slab'
+  mono: 'Fira Code'
+
+# デフォルトのフロントマターはすべてのスライドに適用されます。
+defaults:
+  layout: 'default'
+  # ...
+
+# スライドの情報をMarkdownで記述することができます。
+info: |
+  ## Slidev
+  My first [Slidev](http://sli.dev/) presentations!
+---
+
+```
+
+より詳しいオプションは [type definitions](https://github.com/slidevjs/slidev/blob/main/packages/types/src/config.ts) を参照してください。
+
+## [\#](https://ja.sli.dev/custom/\#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E9%80%A0) ディレクトリ構造
+
+Slidevはディレクトリ構造の規約を利用して、設定を最小化し、機能の拡張を柔軟かつ直感的に行えるようにしています。
+
+[ディレクトリ構造](https://ja.sli.dev/custom/directory-structure) のセクションを参照してください。
+
+## [\#](https://ja.sli.dev/custom/\#%E3%83%84%E3%83%BC%E3%83%AB%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B) ツールを設定する
+
+- [シンタックスハイライト](https://ja.sli.dev/custom/highlighters)
+- [Vueの設定](https://ja.sli.dev/custom/config-vue)
+- [Viteの設定](https://ja.sli.dev/custom/config-vite)
+- [Windi CSSの設定](https://ja.sli.dev/custom/config-windicss)
+- [Monacoの設定](https://ja.sli.dev/custom/config-monaco)
+- [KaTeXの設定](https://ja.sli.dev/custom/config-katex)
+- [Mermaidの設定](https://ja.sli.dev/custom/config-mermaid)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Recording Presentations
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/recording.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0) レコーディング
+
+Slidevにはレコーディング機能とカメラビューが内蔵されています。これらを使って一箇所で簡単にプレゼンテーションをレコーディングすることができます。
+
+## [\#](https://ja.sli.dev/guide/recording.html\#%E3%82%AB%E3%83%A1%E3%83%A9%E3%83%93%E3%83%A5%E3%83%BC) カメラビュー
+
+カメラビューをプレゼンテーションで有効にするには、ナビゲーションパネルのボタンをクリックしてください。ドラッグで移動、右下のハンドラでサイズ変更も可能です。サイズと位置は `localStorage` に保存され、リフレッシュされても維持されるため、心配する必要はありません。
+
+Twitter Embed
+
+## [\#](https://ja.sli.dev/guide/recording.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0-1) レコーディング
+
+ナビゲーションパネルのボタンをクリックすると、ダイアログが表示されます。ここでは、スライドにカメラを埋め込んで録画するか、2つの動画ファイルに分離して録画するかを選択することができます。
+
+この機能は [RecordRTC](https://github.com/muaz-khan/RecordRTC) によって提供され、 [WebRTC API](https://webrtc.org/) を使用しています。
+
+![](https://ja.sli.dev/screenshots/recording.png)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+Twitter Widget Iframe
+
+## Slidev Built-in Layouts
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) レイアウト
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%93%E3%83%AB%E3%83%88%E3%82%A4%E3%83%B3%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) ビルトインレイアウト
+
+> テーマはレイアウトの動作を上書きすることがあるため、使い方やパラメータ、サンプルを正しく知るには、各テーマのドキュメントを参照するのがよいでしょう。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#center) `center`
+
+コンテンツを画面中央に表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#cover) `cover`
+
+プレゼンテーションの表紙を表示するために使用します。プレゼンテーションのタイトルや、コンテキストを含めることができます。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#default) `default`
+
+最も基本的なレイアウトで、あらゆる種類のコンテンツを表示することができます。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#end) `end`
+
+プレゼンテーションの最後のページです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#fact) `fact`
+
+事実やデータを画面上で大きく目立たせて見せるために使用します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#full) `full`
+
+画面のすべてのスペースを使って、コンテンツを表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image-left) `image-left`
+
+画面の左側に画像を表示し、右側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9) 使い方
+
+```
+---
+layout: image-left
+
+# the image source
+image: ./path/to/the/image
+
+# a custom class name to the content
+class: my-cool-content-on-the-right
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image-right) `image-right`
+
+画面右側に画像を表示し、左側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-1) 使い方
+
+```
+---
+layout: image-right
+
+# the image source
+image: ./path/to/the/image
+
+# a custom class name to the content
+class: my-cool-content-on-the-left
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image) `image`
+
+画像をページのメインコンテンツとして表示します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-2) 使い方
+
+```
+---
+layout: image
+
+# the image source
+image: ./path/to/the/image
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe-left) `iframe-left`
+
+画面の左側にWebページを表示し、右側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-3) 使い方
+
+```
+---
+layout: iframe-left
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+
+# a custom class name to the content
+class: my-cool-content-on-the-right
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe-right) `iframe-right`
+
+画面の右側にWebページを表示し、左側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-4) 使い方
+
+```
+---
+layout: iframe-right
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+
+# a custom class name to the content
+class: my-cool-content-on-the-left
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe) `iframe`
+
+Webページをメインコンテンツとして表示します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-5) 使い方
+
+```
+---
+layout: iframe
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#intro) `intro`
+
+プレゼンテーションの始まりに使用します。一般的にはプレゼンテーションのタイトル、簡潔な説明、著者などです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#none) `none`
+
+スタイルなしのレイアウトです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#quote) `quote`
+
+引用文を目立つように表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#section) `section`
+
+新しいプレゼンテーションのセクションの開始を示すために使用します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#statement) `statement`
+
+断言/宣言をメインページのコンテンツとして表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#two-cols) `two-cols`
+
+ページのコンテンツを2列に分割します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-6) 使い方
+
+```
+---
+layout: two-cols
+---
+
+# Left
+
+これは左側に表示されます。
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+```
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) カスタムレイアウト
+
+プロジェクトルートの配下に `layouts/` というディレクトリを作成し、そこにカスタムしたVueのレイアウトコンポーネントを配置します。
+
+詳細は [レイアウト](https://ja.sli.dev/custom/directory-structure.html#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) のセクションを参照してください。
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%8C%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) テーマが提供するレイアウト
+
+テーマはレイアウトを提供したり、既存のレイアウトを上書きすることができます。テーマが提供するレイアウトについては、各テーマのドキュメントを参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Markdown Syntax
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/syntax.html\#markdown%E3%82%B7%E3%83%B3%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B9) Markdownシンタックス
+
+スライドは **1つのマークダウンファイル** (デフォルト： `./slides.md`) の中に記述されます。
+
+[Markdownの機能](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) は通常通り使用することができ、インラインHTMLとVueコンポーネントが追加でサポートされています。 [Windi CSS](https://windicss.org/) を使ったスタイリングもサポートされています。スライドを区切るには改行で囲まれた `---` を使用してください。
+
+````
+# Slidev
+
+Hello, World!
+
+---
+
+# Page 2
+
+コードブロックを直接使用してハイライト表示する
+
+//```ts
+console.log('Hello, World!')
+//```
+
+---
+
+# Page 3
+
+Windi CSSとVueコンポーネントを直接使用して、スライドをスタイリングし、リッチにすることができます。
+
+<div class="p-3">
+  <Tweet id="20" />
+</div>
+
+````
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC-%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) フロントマター & レイアウト
+
+スライドのセパレータを [フロントマターブロック](https://jekyllrb.com/docs/front-matter/) に変換して、各スライドのレイアウトやその他のメタデータを指定します。各フロントマターはトリプルダッシュで始まり、トリプルダッシュで終わります。その間にあるテキストは [YAML](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started/) 形式のデータオブジェクトになります。例：
+
+```
+---
+layout: cover
+---
+
+# Slidev
+
+これはカバーページです。
+
+---
+layout: center
+background: './images/background-1.png'
+class: 'text-white'
+---​
+
+# Page 2
+
+これはレイアウト`center`とバックグラウンドイメージが指定されたページです。
+
+---
+
+# Page 3
+
+これはいかなる追加のメタデータもない、デフォルトのページです。
+
+```
+
+詳細は [カスタマイズ](https://ja.sli.dev/custom/) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%B3%E3%83%BC%E3%83%89%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF) コードブロック
+
+Slidevを開発した大きな理由の1つは、自分のコードをスライド上で正しく見せる必要があるためです。SlidevではMarkdownフレーバーなコードブロックを使って、意図した通りにコードをハイライトすることができます。
+
+````
+//```ts
+console.log('Hello, World!')
+//```
+
+````
+
+Slidevはシンタックスハイライターとして [Prism](http://prismjs.com/) と [Shiki](https://github.com/shikijs/shiki) をサポートしています。詳細は [シンタックスハイライト](https://ja.sli.dev/custom/highlighters) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E8%A1%8C%E3%81%AE%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88) 行のハイライト
+
+特定の行をハイライトするためには、ブラケット `{}` の中に単純に行番号を追加するだけです。行番号のカウントは1から始まります。
+
+````
+//```ts {2,3}
+function add(
+  a: Ref<number> | number,
+  b: Ref<number> | number
+) {
+  return computed(() => unref(a) + unref(b))
+}
+//```
+
+````
+
+ハイライトする行を複数ステップに分けて変更するには、 `|` を使用して行番号を分割してください。例：
+
+````
+//```ts {2-3|5|all}
+function add(
+  a: Ref<number> | number,
+  b: Ref<number> | number
+) {
+  return computed(() => unref(a) + unref(b))
+}
+//```
+
+````
+
+このサンプルでは、はじめに `a: Ref<number> | number` と `b: Ref<number> | number` を、次にクリックがされた後に `return computed(() => unref(a) + unref(b))` を、最後にコードブロック全体をハイライトします。詳細は [アニメーションガイド](https://ja.sli.dev/guide/animations) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#monaco%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF) Monacoエディタ
+
+プレゼンテーション中になんらかの変更を加えたいときは、言語名の後ろに `{monaco}` を追加するだけで、ブロックが完全なMonacoエディタに切り替わります！
+
+````
+//```ts {monaco}
+console.log('HelloWorld')
+//```
+
+````
+
+詳細は [Monacoの設定](https://ja.sli.dev/custom/config-monaco) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) 埋め込みスタイル
+
+Markdownで直接 `<style>` タグを使用すると、 **現在のスライド** のスタイルをオーバーライドすることができます。
+
+```
+# このページはRed
+
+<style>
+h1 {
+  color: red
+}
+</style>
+
+---
+
+# 次のスライドには適用されない
+
+```
+
+Markdown内の `<style>` タグは常に [scoped](https://vue-loader.vuejs.org/guide/scoped-css.html) です。グローバルにスタイルをオーバーライドする場合は、 [スタイル](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) を参照してください。
+
+[Windi CSS](https://windicss.org/) を搭載しているため、 ネストしたCSSや [directives](https://windicss.org/features/directives.html) (e.g. `@apply`)を直接利用することができます。
+
+```
+# Slidev
+
+> Hello `world`
+
+<style>
+blockquote {
+  code {
+    @apply text-teal-500 dark:text-teal-400;
+  }
+}
+</style>
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E9%9D%99%E7%9A%84%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88) 静的アセット
+
+Markdownで書くのと同じように、リモートまたはローカルのURLを指定して画像を使用することができます。
+
+リモートのアセットについては、ビルトインの [`vite-plugin-remote-assets`](https://github.com/antfu/vite-plugin-remote-assets) が初回実行時にディスクにキャッシュするため、あとで大きなサイズの画像を読み込み場合でもすぐに読み込むことができます。
+
+```
+![リモートの画像](https://sli.dev/favicon.png)
+
+```
+
+ローカルのアセットについては、 [`public` フォルダ](https://ja.sli.dev/custom/directory-structure#public) に格納し、 **頭にスラッシュ** をつけて参照します。
+
+```
+![ローカルの画像](/pic.png)
+
+```
+
+カスタムサイズやスタイルを適用したい場合は、 `<img>` タグに変換することもできます。
+
+```
+<img src="/pic.png" class="m-40 h-40 rounded shadow" />
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%8E%E3%83%BC%E3%83%88) ノート
+
+各スライドにメモを取ることもできます。メモは [プレゼンターモード](https://ja.sli.dev/guide/presenter-mode) に表示され、プレゼンテーションの際に参照することができます。
+
+Markdownでは、各スライドの最後のコメントブロックはノートとして扱われます。
+
+```
+---
+layout: cover
+---
+
+# Page 1
+
+これはカバーページです。
+
+<!-- これはノートです -->
+
+---
+
+# Page 2
+
+<!-- これは、スライドの内容より前にあるため、ノートではありません。 -->
+
+2ページ目
+
+<!--
+これもまたノートです
+-->
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3) アイコン
+
+Slidevを使用すると、Markdownの中でほとんどすべての人気のあるオープンソースのアイコンセットに **直接** アクセスすることができます。 [`vite-plugin-icons`](https://github.com/antfu/vite-plugin-icons) と [Iconify](https://iconify.design/) によって提供されています。
+
+命名は [Iconify](https://iconify.design/) の `{collection-name}-{icon-name}` の形式に従います。例：
+
+- `<mdi-account-circle />` \-  from [Material Design Icons](https://github.com/Templarian/MaterialDesign)
+- `<carbon-badge />` \-  from [Carbon](https://github.com/carbon-design-system/carbon/tree/main/packages/icons)
+- `<uim-rocket />` \-  from [Unicons Monochrome](https://github.com/Iconscout/unicons)
+- `<twemoji-cat-with-tears-of-joy />` \-  from [Twemoji](https://github.com/twitter/twemoji)
+- `<logos-vue />` \-  from [SVG Logos](https://github.com/gilbarbara/logos)
+- その他にも。..
+
+利用可能なすべてのアイコンは [Icônes](https://icones.js.org/) で閲覧・検索できます。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3%E3%81%AE%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%B0) アイコンのスタイリング
+
+他のHTML同様にアイコンをスタイルすることができます。例：
+
+```
+<uim-rocket />
+<uim-rocket class="text-3xl text-red-400 mx-2" />
+<uim-rocket class="text-3xl text-orange-400 animate-ping" />
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%B9%E3%83%AD%E3%83%83%E3%83%88) スロット
+
+> v0.18から使用可能です
+
+レイアウトによっては、 [名前付きスロット](https://v3.ja.vuejs.org/guide/component-slots.html#%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AB%E3%83%8F%E3%82%99%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84) を使用して、複数のコントリビューションポイントを提供できます。
+
+例えば、 [`two-cols` レイアウト](https://github.com/slidevjs/slidev/blob/main/packages/client/layouts/two-cols.vue) では、左 ( `default` スロット）と右 ( `right` スロット）の2つのカラムを並べることができるようになります。
+
+```
+---
+layout: two-cols
+---
+
+<template v-slot:default>
+
+# Left
+
+これは左側に表示されます。
+
+</template>
+<template v-slot:right>
+
+# Right
+
+これは右側に表示されます。
+
+</template>
+
+```
+
+### 左
+
+これは左側に表示されます。
+
+### 右
+
+これは右側に表示されます。
+
+またスロット名のショートハンドシンタックスシュガー `::name::` も用意されています。次の例は前に示した例と全く同じように動作します。
+
+```
+---
+layout: two-cols
+---
+
+# Left
+
+これは左側に表示されます。
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+```
+
+またデフォルトのスロットを明示的に指定し、カスタムオーダーで提供することも可能です。
+
+```
+---
+layout: two-cols
+---
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+::default::
+
+# Left
+
+これは左側に表示されます。
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E8%A8%AD%E5%AE%9A) 設定
+
+必要な設定はすべてMarkdownファイルで定義することができます。 例：
+
+```
+---
+theme: seriph
+layout: cover
+background: 'https://source.unsplash.com/1600x900/?nature,water'
+---
+
+# Slidev
+
+これはカバーページです。
+
+```
+
+詳細は [フロントマターの設定](https://ja.sli.dev/custom/#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#latex) LaTeX
+
+Slidevは [KaTeX](https://katex.org/) によってLaTeXをサポートしています。
+
+Twitter Embed
+
+[Visit this post on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[![](https://pbs.twimg.com/profile_images/1388805947691134976/bIiEQTyK_normal.jpg)](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[Slidev](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[@Slidevjs](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+·
+
+[Follow](https://twitter.com/intent/follow?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&screen_name=Slidevjs)
+
+[View on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+![🚀](https://abs-0.twimg.com/emoji/v2/svg/1f680.svg) Slidev v0.9.0 Released
+
+![🤹](https://abs-0.twimg.com/emoji/v2/svg/1f939.svg) Animations / Motion by [@vueuse](https://twitter.com/VueUse?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)'s motion package
+![📰](https://abs-0.twimg.com/emoji/v2/svg/1f4f0.svg) Textual diagrams by Mermaid.js
+
+![👇](https://abs-0.twimg.com/emoji/v2/svg/1f447.svg) Play the demo here!
+[https://sli.dev/demo/starter](https://sli.dev/demo/starter)
+
+![](https://pbs.twimg.com/tweet_video_thumb/E1JAtTwVcAETfnF.jpg)
+
+GIF
+
+[Watch on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[10:33 PM · May 11, 2021](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[X Ads info and privacy](https://help.twitter.com/en/twitter-for-websites-ads-info-and-privacy)
+
+[311](https://twitter.com/intent/like?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&tweet_id=1392246507793915904) [Reply](https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&in_reply_to=1392246507793915904)
+
+Copy link
+
+[Read 6 replies](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5Ef9b947f9823b57f3bad9028da677083c8c7c5a62%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A4%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3) インライン
+
+インラインで表示する場合は、LaTeXの両側を1つの `$` で囲います。
+
+```
+$\sqrt{3x-1}+(1+x)^2$
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF) ブロック
+
+ブロックで表示するには、2つの ( `$$`)を使います。このモードではより大きな記号を使用し、結果を中央に配置します。
+
+```
+$$
+\begin{array}{c}
+
+\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
+= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
+
+\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
+
+\nabla \cdot \vec{\mathbf{B}} & = 0
+
+\end{array}
+$$
+
+```
+
+詳細： [デモ](https://sli.dev/demo/starter/8) \| [KaTeX](https://katex.org/) \| [`markdown-it-katex`](https://github.com/waylonflinn/markdown-it-katex)
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E5%9B%B3%E5%BD%A2) 図形
+
+[Mermaid](https://mermaid-js.github.io/mermaid) を利用して、Markdownのテキスト記述から図 / グラフを作成することも可能です。
+
+`mermaid` として指定されたコードブロックは図形に変換されます。 例：
+
+````
+//```mermaid
+sequenceDiagram
+  Alice->John: Hello John, how are you?
+  Note over Alice,John: A typical interaction
+//```
+
+````
+
+さらにオプションオブジェクトを渡すことで、スケーリングやテーマを指定することができます。オブジェクトのシンタックスはJavaScriptのオブジェクトリテラルで、文字列には引用符（ `'`)を、キーの間には（ `,`)を追加する必要があります。
+
+````
+//```mermaid {theme: 'neutral', scale: 0.8}
+graph TD
+B[Text] --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+//```
+
+````
+
+詳細： [デモ](https://sli.dev/demo/starter/9) \| [Mermaid](https://mermaid-js.github.io/mermaid)
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%9E%E3%83%AB%E3%83%81%E3%83%97%E3%83%AB%E3%82%A8%E3%83%B3%E3%83%88%E3%83%AA%E3%83%BC) マルチプルエントリー
+
+> v0.15から使用可能です
+
+`slides.md` を複数のファイルに分割して、好きなように整理することができます。
+
+`slides.md` :
+
+```
+# Page 1
+
+これは通常のページです。
+
+---
+src: ./subpage2.md
+---
+
+<!-- このページは'./subpage2.md'から読み込まれます -->
+インラインコンテンツは無視されます
+
+```
+
+`subpage2.md` :
+
+```
+# Page 2
+
+このページは別のファイルのものです
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E3%83%9E%E3%83%BC%E3%82%B8) フロントマターのマージ
+
+フロントマターはメインのエントリーと外部のMarkdownページの両方から指定することができます。もし同じキーがある場合は、 **メインエントリに記載されている内容がより優先度が高くなります**。例：
+
+`slides.md` :
+
+```
+---
+src: ./cover.md
+background: https://sli.dev/bar.png
+class: text-center
+---
+
+```
+
+`cover.md` :
+
+```
+---
+layout: cover
+background: https://sli.dev/foo.png
+---
+
+# カバー
+
+カバーページ
+
+```
+
+以下のページと同じように評価されます：
+
+```
+---
+layout: cover
+background: https://sli.dev/bar.png
+class: text-center
+---
+
+# カバー
+
+カバーページ
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE%E5%86%8D%E5%88%A9%E7%94%A8) ページの再利用
+
+マルチエントリーにより、ページの再利用が容易になります。例：
+
+```
+---
+src: ./cover.md
+---
+
+---
+src: ./intro.md
+---
+
+---
+src: ./content.md
+---
+
+---
+# reuse
+src: ./content.md
+---
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+Twitter Widget Iframe
+
+## Using Themes in Slidev
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/themes/use.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B) テーマを使用する
+
+Slidevのテーマを変更するのは驚くほど簡単です。フロントマターに `theme:` フィールドを追加するだけです。
+
+```
+---
+theme: seriph
+---
+
+```
+
+サーバーを起動すると、テーマの自動インストールを促すメッセージが表示されます。
+
+```
+? The theme "@slidev/theme-seriph" was not found in your project, do you want to install it now? › (Y/n)
+
+```
+
+あるいは以下の方法で手動でテーマをインストールします
+
+```
+$ npm install @slidev/theme-seriph
+
+```
+
+以上、新しいテーマをお楽しみください。各テーマの使い方の詳細については、テーマのREADMEを参照してください。
+
+あなたのテーマを共有したいですか？ [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) を参照してください。
+
+## [\#](https://ja.sli.dev/themes/use.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E5%8F%96%E3%82%8A%E5%87%BA%E3%81%97) テーマの取り出し
+
+現在のテーマを完全に制御したい場合は、ローカルファイルシステム上に **取り出し** して好きなように変更することができます。次のコマンドを実行します。
+
+```
+$ slidev theme eject
+
+```
+
+現在使用しているテーマを `./theme` に出力し、フロントマターを次のように変更します。
+
+```
+---
+theme: ./theme
+---
+
+```
+
+また、これは既存のテーマをベースにテーマを作成するのに参考になります。その際は、元のテーマと作者について言及することを忘れないでください 😃
+
+## [\#](https://ja.sli.dev/themes/use.html\#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%83%86%E3%83%BC%E3%83%9E) ローカルテーマ
+
+前のセクションでおわかりのように、プロジェクトにローカルテーマを指定することができます。themeフィールドに **相対パス** を指定します。
+
+```
+---
+theme: ./path/to/theme
+---
+
+```
+
+詳細は [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Presentations Showcase
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/showcases.html\#%E3%82%B7%E3%83%A7%E3%83%BC%E3%82%B1%E3%83%BC%E3%82%B9) ショーケース
+
+Slidevを使ったトーク / プレゼンテーションです。
+
+[![](https://ja.sli.dev/showcases/composable-vue.png)](https://sli.dev/demo/composable-vue)
+
+Composable Vue
+
+VueDay 2021
+
+[Anthony Fu](https://github.com/antfu)
+
+[![](https://seonglae-slides.vercel.app/og.png)](https://seonglae-slides.vercel.app/)
+
+Developer Seonglae
+
+Seongland
+
+[Seonglae Cho](https://github.com/seonglae)
+
+[![](https://user-images.githubusercontent.com/11247099/122246420-1df97b80-cef9-11eb-9c57-7751c6999deb.png)](http://vueday-2021.linusb.org/)
+
+Vue 3 > Vue 2 + 1
+
+Enter.js Vue Day
+
+[Thorsten Lünborg](https://github.com/LinusBorg)
+
+[![](https://masukin.link/talks-cover-npm.png)](https://masukin.link/talks/simply-publish-your-package-to-npm)
+
+Simply Publish Your Package to npm
+
+Weekly sharing
+
+[Lucky Dewa Satria](https://github.com/lucky401)
+
+[![](https://masukin.link/talks-cover-create-icon-package-with-vue-and-rollup.png)](https://masukin.link/talks/create-icon-package-with-vue-and-rollup)
+
+Create Icon Package With Vue and Rollup
+
+Weekly Sharing
+
+[Lucky Dewa Satria](https://github.com/lucky401)
+
+[![](https://raw.githubusercontent.com/TutoDS/lei-project/master/presentation/cover.png)](https://beapt-presentation.netlify.app/)
+
+BeAPT
+
+Presentation of my college final project
+
+[Daniel Sousa @TutoDS](https://github.com/tutods)
+
+[![](https://raw.githubusercontent.com/cedric25/prisma-talk/main/cover-for-slidev.png)](https://prisma-talk.netlify.app/)
+
+Prisma as my ORM for PostgreSQL
+
+LyonJS Meetup
+
+[Cedric Nicoloso](https://github.com/cedric25)
+
+[![](https://raw.githubusercontent.com/lyqht/intro-to-svg-slides/main/intro-to-svg-slides-cover.png)](https://lyqht.github.io/intro-to-svg-slides/)
+
+Introduction to SVG
+
+Thoughtworks Internal Lunch & Learn
+
+[Estee Tey](https://github.com/lyqht)
+
+[![](https://ja.sli.dev/theme-placeholder.png)](https://github.com/slidevjs/docs/edit/main/.vitepress/showcases.ts)
+
+Yours?
+
+Submit your talk/presentation to be list here!
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Why Choose Slidev?
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/why.html\#%E3%81%AA%E3%81%9Cslidev%EF%BC%9F) なぜSlidev？
+
+[Microsoft PowerPoint](https://www.microsoft.com/en-us/microsoft-365/powerpoint) や [Apple Keynote](https://www.apple.com/keynote/) など、機能豊富で汎用的なWYSIWYGのスライド作成ツールがたくさんあります。これらは非常に直感的で簡単に学ぶことができる一方で、アニメーションやチャート、その他の多くの機能を使った素晴らしいスライドを作成するのに非常によく機能します。では、なぜわざわざSlidevを作ったのでしょうか？
+
+Slidevの目的は、開発者が既に慣れ親しんでいるツールや技術を使って、プレゼンテーションをさらに面白く、表現力豊かに、そして魅力的にするための柔軟性と対話性を提供することです。
+
+WYSIWYGエディタで作業していると、スタイリングオプションに気を取られがちです。Slidevはコンテンツとビジュアルを分離することでそれを改善します。これによって、一度に1つのことに集中できるようになり、同時にコミュニティのテーマを再利用できるようになります。Slidevは他のスライドデッキビルダーに完全に取って代わろうとはしていません。それよりも、開発者コミュニティに応えることに重点をおいています。
+
+## [\#](https://ja.sli.dev/guide/why.html\#slidev) Slidev
+
+![](https://ja.sli.dev/screenshots/cover.png)
+
+ここでは、いくつかのSlidevのクールな機能を紹介します：
+
+## [\#](https://ja.sli.dev/guide/why.html\#markdown%E3%83%99%E3%83%BC%E3%82%B9) Markdownベース
+
+Slidevは拡張されたMarkdown形式を使用して、スライドを単一のプレーンテキストファイルに保存し、整理します。これにより、コンテンツの作成に集中することができます。またコンテンツとスタイルが分離されているので、異なるテーマに楽に切り替えることが可能です。
+
+詳しくは [Markdownシンタックス](https://ja.sli.dev/guide/syntax) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%B1%8A%E5%AF%8C%E3%81%AA%E3%83%86%E3%83%BC%E3%83%9E) 豊富なテーマ
+
+Slidevのテーマは、npmパッケージを使用して共有とインストールができます。そして1行設定するだけでテーマを適用することができます。
+
+[テーマギャラリー](https://ja.sli.dev/themes/gallery) や [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) をチェックしてみてください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%87%E3%83%99%E3%83%AD%E3%83%83%E3%83%91%E3%83%BC%E3%83%95%E3%83%AC%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC) デベロッパーフレンドリー
+
+Slidevは開発者のためにコードスニペットのファーストクラスのサポートを提供します。 [Prism](https://prismjs.com/) と [Shiki](https://github.com/shikijs/shiki) の両方をサポートし、ピクセルパーフェクトなシンタックスハイライトを実現しつつ、いつでもコードを修正することができます。 [Monaco editor](https://microsoft.github.io/monaco-editor/) を内蔵し、オートコンプリート、タイプホバーリング、TypeScriptの型チェックサポートにより、プレゼンテーションでのライブコーディングやデモも可能になります。
+
+詳しくは [シンタックスハイライト](https://ja.sli.dev/custom/highlighters) と [Monacoの設定](https://ja.sli.dev/custom/config-monaco) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E9%AB%98%E9%80%9F) 高速
+
+Slidevは [Vite](https://vitejs.dev/)、 [Vue 3](https://v3.ja.vuejs.org/)、そして [Windi CSS](https://windicss.org/) を利用しており、もっとも素晴らしいオーサリング体験を提供しています。あなたが行ったすべての変更は、 **即時に** あなたのスライドに反映されます。
+
+詳しくは [技術スタック](https://ja.sli.dev/guide/#%E6%8A%80%E8%A1%93%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF) をご覧ください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%A9%E3%82%AF%E3%83%86%E3%82%A3%E3%83%96-%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%97%E3%83%AC%E3%83%83%E3%82%B7%E3%83%96) インタラクティブ & エクスプレッシブ
+
+Markdownファイルの中に直接Vueのカスタムコンポーネントを記述することができます。また、プレゼンテーションの中でそれらとやりとりすることで、より面白く、より直感的にアイデアを表現することができます。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88) レコーディングサポート
+
+Slidevはビルトインのレコーディング機能とカメラービューを提供します。カメラービューを含めたプレゼンテーションを共有したり、画面とカメラで別々に録画・保存することも可能です。すべてSlidevだけで完結しており、追加のツールは必要ありません。
+
+詳しくは [レコーディング](https://ja.sli.dev/guide/recording) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%9D%E3%83%BC%E3%82%BF%E3%83%96%E3%83%AB) ポータブル
+
+コマンド1つでスライドをPDF、PNG、あるいはホスティング可能なSPAとしてエクスポートでき、どこへでも共有することができます。
+
+詳しくは [エクスポート](https://ja.sli.dev/guide/exporting) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%87%AA%E7%94%B1%E3%81%AB%E9%96%8B%E7%99%BA%E5%8F%AF%E8%83%BD) 自由に開発可能
+
+Web技術を使用していることにより、WebアプリでできることはSlidevでも実現可能です。例えば、WebGL、APIリクエスト、iframe、あるいはライブシェアリングなどが利用可能です。あなたの想像力次第でなんでもできます！
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%A9%A6%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B) 試してみる
+
+百聞は一件にしかずということで、実際にSlidevを使ってみましょう。 コマンドを実行：
+
+```
+$ npm init slidev
+
+```
+
+またはプレビュー:
+
+Slidev First Preview Demo - YouTube
+
+[Photo image of Anthony Fu](https://www.youtube.com/channel/UCbzoLT8wqhI3iOAz1Nq0pvw?embeds_referring_euri=https%3A%2F%2Fja.sli.dev%2F)
+
+Anthony Fu
+
+7.34K subscribers
+
+[Slidev First Preview Demo](https://www.youtube.com/watch?v=eW7v-2ZKZOU)
+
+Anthony Fu
+
+Search
+
+Info
+
+Shopping
+
+Tap to unmute
+
+If playback doesn't begin shortly, try restarting your device.
+
+You're signed out
+
+Videos you watch may be added to the TV's watch history and influence TV recommendations. To avoid this, cancel and sign in to YouTube on your computer.
+
+CancelConfirm
+
+Share
+
+Include playlist
+
+An error occurred while retrieving sharing information. Please try again later.
+
+Watch later
+
+Share
+
+Copy link
+
+Watch on
+
+0:00
+
+/
+•Live
+
+•
+
+[Watch on YouTube](https://www.youtube.com/watch?v=eW7v-2ZKZOU "Watch on YouTube")
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Presentation Tool
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/\#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB) はじめに
+
+## [\#](https://ja.sli.dev/guide/\#%E6%A6%82%E8%A6%81) 概要
+
+Slidev (slide + dev, `/slʌɪdɪv/`) はWebベースのスライド作成およびプレゼンテーションツールです。開発者がMarkdownでコンテンツを書くことに集中しつつ、HTMLとVueコンポーネントを用いて、プレゼンテーションにインタラクティブなデモを埋め込んだピクセルパーフェクトなレイアウトとデザインを提供できるようにも設計されています。
+
+機能豊富なマークダウンファイルを使用して、ライブコーディング、PDFエクスポート、プレゼンテーションのレコーディングのような、多くのビルトインインテグレーションとともに、瞬時に再読み込みが可能な美しいスライドを生成します。webで動くので、Slidevを使ってどんなことでもできます - 可能性は無限大です。
+
+プロジェクトの論理的根拠については [なぜSlidev？](https://ja.sli.dev/guide/why) のセクションで詳しく説明しています。
+
+### [\#](https://ja.sli.dev/guide/\#%E6%A9%9F%E8%83%BD) 機能
+
+- 📝 [**Markdownベース**](https://ja.sli.dev/guide/syntax) \- お気に入りのエディタとワークフローを使用
+- 🧑‍💻 [**デベロッパーフレンドリー**](https://ja.sli.dev/guide/syntax.html#%E3%82%B3%E3%83%BC%E3%83%89%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF) \- ビルトインのシンタックスハイライト、ライブコーディングなど
+- 🎨 [**豊富なテーマ**](https://ja.sli.dev/themes/gallery) \- テーマはnpmパッケージで共有・利用が可能
+- 🌈 [**スタイリッシュ**](https://ja.sli.dev/guide/syntax.html#%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) \- [Windi CSS](https://windicss.org/) オンデマンドユーティリティ、 使いやすい埋め込まれたスタイルシート
+- 🤹 [**インタラクティブ**](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) \- Vueコンポーネントをシームレスに埋め込み
+- 🎙 [**プレゼンターモード**](https://ja.sli.dev/guide/presenter-mode) \- 別のウィンドウ、スマートフォンでさえもスライドを操作
+- 🎨 [**描画**](https://ja.sli.dev/guide/drawing) \- スライドに描画し、注釈をつける
+- 🧮 [**LaTeX**](https://ja.sli.dev/guide/syntax#latex) \- LaTeX数式のビルトインサポート
+- 📰 [**図形**](https://ja.sli.dev/guide/syntax.html#%E5%9B%B3%E5%BD%A2) \- 説明と合わせて図形を作成
+- 🌟 [**アイコン**](https://ja.sli.dev/guide/syntax.html#%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3) \- どんなアイコンセットからでも、直接アイコンにアクセス
+- 💻 [**エディタ**](https://ja.sli.dev/guide/editors) \- 統合されたエディタと [VS Code拡張機能](https://github.com/slidevjs/slidev-vscode)
+- 🎥 [**レコーディング**](https://ja.sli.dev/guide/recording) \- ビルトインのレコーディングとカメラビュー
+- 📤 [**ポータブル**](https://ja.sli.dev/guide/exporting) \- PDF、PNG、またはホスト可能なSPAにエクスポート
+- ⚡️ [**高速**](https://vitejs.dev/) \- [Vite](https://vitejs.dev/) によって提供されたインスタントリロード
+- 🛠 [**自由に開発可能**](https://ja.sli.dev/custom/config-vite) \- Viteプラグイン、Vue components、どんなnpmパッケージも使用可能
+
+### [\#](https://ja.sli.dev/guide/\#%E6%8A%80%E8%A1%93%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF) 技術スタック
+
+これらのツールや技術を組み合わせることで、Slidevは実現されています。
+
+- [Vite](https://vitejs.dev/) \- 非常に高速なフロントエンドツール
+- [Vue 3](https://v3.ja.vuejs.org/) をベースにした [Markdown](https://daringfireball.net/projects/markdown/syntax) \- 必要に応じてHTMLとVueコンポーネントを使いつつ、コンテンツに集中できます
+- [Windi CSS](https://github.com/windicss/windicss) \- オンデマンドなユーティリティファーストのCSSフレームワーク、 スライドを自在にスタイリング
+- [Prism](https://github.com/PrismJS/prism)、 [Shiki](https://github.com/shikijs/shiki)、 [Monaco Editor](https://github.com/Microsoft/monaco-editor) \- ファーストクラスのコードスニペットサポートとライブコーディング機能
+- [RecordRTC](https://recordrtc.org/) \- ビルトインのレコーディングとカメラビュー
+- [VueUse](https://vueuse.org/) ファミリー \- [`@vueuse/core`](https://github.com/vueuse/vueuse)、 [`@vueuse/head`](https://github.com/vueuse/head)、 [`@vueuse/motion`](https://github.com/vueuse/motion) など
+- [Iconify](https://iconify.design/) \- アイコンセットコレクション
+- [Drauu](https://github.com/antfu/drauu) \- 描画と注釈のサポート
+- [KaTeX](https://katex.org/) \- LaTeX数式のレンダリング
+- [Mermaid](https://mermaid-js.github.io/mermaid) \- テキストによる図解
+
+### [\#](https://ja.sli.dev/guide/\#%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%E3%83%97%E3%83%AC%E3%82%BC%E3%83%B3%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B) はじめてのプレゼンテーションを作成する
+
+#### [\#](https://ja.sli.dev/guide/\#%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%81%A7%E8%A9%A6%E3%81%99) オンラインで試す
+
+[sli.dev/new](https://sli.dev/new)
+
+[![](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://sli.dev/new)
+
+#### [\#](https://ja.sli.dev/guide/\#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%81%A7%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B) ローカルで作成する
+
+NPMで作成：
+
+```
+$ npm init slidev
+
+```
+
+Yarnで作成：
+
+```
+$ yarn create slidev
+
+```
+
+プロンプトに従って、今すぐスライドを作り始めましょう！　Markdownシンタックスの詳細は、 [シンタックスガイド](https://ja.sli.dev/guide/syntax) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/\#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%95%E3%82%A7%E3%83%BC%E3%82%B9) コマンドラインインターフェース
+
+Slidevがインストールされたプロジェクトでは、 npmスクリプトで `slidev` コマンドを使用することができます。
+
+```
+{
+  "scripts": {
+    "dev": "slidev", // start dev server
+    "build": "slidev build", // build for production SPA
+    "export": "slidev export" // export slides to pdf
+  }
+}
+
+```
+
+あるいは [`npx`](https://www.npmjs.com/package/npx) で使用することができます。
+
+```
+$ npx slidev
+
+```
+
+その他のオプションについては、 `slidev --help` を実行してください。
+
+### [\#](https://ja.sli.dev/guide/\#markdown%E3%82%B7%E3%83%B3%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B9) Markdownシンタックス
+
+Slidevはプロジェクトルートの配下にある `slides.md` を読み取り、スライドに変換します。 変更を加えると、 スライドのコンテンツに即時に反映されます。 例：
+
+````
+# Slidev
+
+Hello World
+
+---
+
+# Page 2
+
+Directly use code blocks for highlighting
+
+//```ts
+console.log('Hello, World!')
+//```
+
+---
+
+# Page 3
+
+````
+
+SlidevのMarkdownシンタックスについては [シンタックスガイド](https://ja.sli.dev/guide/syntax) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## SLI Sitemap
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+## Slidev Presentations Showcase
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/showcases.html\#%E3%82%B7%E3%83%A7%E3%83%BC%E3%82%B1%E3%83%BC%E3%82%B9) ショーケース
+
+Slidevを使ったトーク / プレゼンテーションです。
+
+[![](https://ja.sli.dev/showcases/composable-vue.png)](https://sli.dev/demo/composable-vue)
+
+Composable Vue
+
+VueDay 2021
+
+[Anthony Fu](https://github.com/antfu)
+
+[![](https://seonglae-slides.vercel.app/og.png)](https://seonglae-slides.vercel.app/)
+
+Developer Seonglae
+
+Seongland
+
+[Seonglae Cho](https://github.com/seonglae)
+
+[![](https://user-images.githubusercontent.com/11247099/122246420-1df97b80-cef9-11eb-9c57-7751c6999deb.png)](http://vueday-2021.linusb.org/)
+
+Vue 3 > Vue 2 + 1
+
+Enter.js Vue Day
+
+[Thorsten Lünborg](https://github.com/LinusBorg)
+
+[![](https://masukin.link/talks-cover-npm.png)](https://masukin.link/talks/simply-publish-your-package-to-npm)
+
+Simply Publish Your Package to npm
+
+Weekly sharing
+
+[Lucky Dewa Satria](https://github.com/lucky401)
+
+[![](https://masukin.link/talks-cover-create-icon-package-with-vue-and-rollup.png)](https://masukin.link/talks/create-icon-package-with-vue-and-rollup)
+
+Create Icon Package With Vue and Rollup
+
+Weekly Sharing
+
+[Lucky Dewa Satria](https://github.com/lucky401)
+
+[![](https://raw.githubusercontent.com/TutoDS/lei-project/master/presentation/cover.png)](https://beapt-presentation.netlify.app/)
+
+BeAPT
+
+Presentation of my college final project
+
+[Daniel Sousa @TutoDS](https://github.com/tutods)
+
+[![](https://raw.githubusercontent.com/cedric25/prisma-talk/main/cover-for-slidev.png)](https://prisma-talk.netlify.app/)
+
+Prisma as my ORM for PostgreSQL
+
+LyonJS Meetup
+
+[Cedric Nicoloso](https://github.com/cedric25)
+
+[![](https://raw.githubusercontent.com/lyqht/intro-to-svg-slides/main/intro-to-svg-slides-cover.png)](https://lyqht.github.io/intro-to-svg-slides/)
+
+Introduction to SVG
+
+Thoughtworks Internal Lunch & Learn
+
+[Estee Tey](https://github.com/lyqht)
+
+[![](https://ja.sli.dev/theme-placeholder.png)](https://github.com/slidevjs/docs/edit/main/.vitepress/showcases.ts)
+
+Yours?
+
+Submit your talk/presentation to be list here!
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Built-in Layouts
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) レイアウト
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%93%E3%83%AB%E3%83%88%E3%82%A4%E3%83%B3%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) ビルトインレイアウト
+
+> テーマはレイアウトの動作を上書きすることがあるため、使い方やパラメータ、サンプルを正しく知るには、各テーマのドキュメントを参照するのがよいでしょう。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#center) `center`
+
+コンテンツを画面中央に表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#cover) `cover`
+
+プレゼンテーションの表紙を表示するために使用します。プレゼンテーションのタイトルや、コンテキストを含めることができます。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#default) `default`
+
+最も基本的なレイアウトで、あらゆる種類のコンテンツを表示することができます。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#end) `end`
+
+プレゼンテーションの最後のページです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#fact) `fact`
+
+事実やデータを画面上で大きく目立たせて見せるために使用します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#full) `full`
+
+画面のすべてのスペースを使って、コンテンツを表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image-left) `image-left`
+
+画面の左側に画像を表示し、右側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9) 使い方
+
+```
+---
+layout: image-left
+
+# the image source
+image: ./path/to/the/image
+
+# a custom class name to the content
+class: my-cool-content-on-the-right
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image-right) `image-right`
+
+画面右側に画像を表示し、左側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-1) 使い方
+
+```
+---
+layout: image-right
+
+# the image source
+image: ./path/to/the/image
+
+# a custom class name to the content
+class: my-cool-content-on-the-left
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#image) `image`
+
+画像をページのメインコンテンツとして表示します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-2) 使い方
+
+```
+---
+layout: image
+
+# the image source
+image: ./path/to/the/image
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe-left) `iframe-left`
+
+画面の左側にWebページを表示し、右側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-3) 使い方
+
+```
+---
+layout: iframe-left
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+
+# a custom class name to the content
+class: my-cool-content-on-the-right
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe-right) `iframe-right`
+
+画面の右側にWebページを表示し、左側にコンテンツを配置します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-4) 使い方
+
+```
+---
+layout: iframe-right
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+
+# a custom class name to the content
+class: my-cool-content-on-the-left
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#iframe) `iframe`
+
+Webページをメインコンテンツとして表示します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-5) 使い方
+
+```
+---
+layout: iframe
+
+# the web page source
+url: https://github.com/slidevjs/slidev
+---
+
+```
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#intro) `intro`
+
+プレゼンテーションの始まりに使用します。一般的にはプレゼンテーションのタイトル、簡潔な説明、著者などです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#none) `none`
+
+スタイルなしのレイアウトです。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#quote) `quote`
+
+引用文を目立つように表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#section) `section`
+
+新しいプレゼンテーションのセクションの開始を示すために使用します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#statement) `statement`
+
+断言/宣言をメインページのコンテンツとして表示します。
+
+### [\#](https://ja.sli.dev/builtin/layouts.html\#two-cols) `two-cols`
+
+ページのコンテンツを2列に分割します。
+
+#### [\#](https://ja.sli.dev/builtin/layouts.html\#%E4%BD%BF%E3%81%84%E6%96%B9-6) 使い方
+
+```
+---
+layout: two-cols
+---
+
+# Left
+
+これは左側に表示されます。
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+```
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) カスタムレイアウト
+
+プロジェクトルートの配下に `layouts/` というディレクトリを作成し、そこにカスタムしたVueのレイアウトコンポーネントを配置します。
+
+詳細は [レイアウト](https://ja.sli.dev/custom/directory-structure.html#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) のセクションを参照してください。
+
+## [\#](https://ja.sli.dev/builtin/layouts.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%8C%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) テーマが提供するレイアウト
+
+テーマはレイアウトを提供したり、既存のレイアウトを上書きすることができます。テーマが提供するレイアウトについては、各テーマのドキュメントを参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Why Choose Slidev?
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/why.html\#%E3%81%AA%E3%81%9Cslidev%EF%BC%9F) なぜSlidev？
+
+[Microsoft PowerPoint](https://www.microsoft.com/en-us/microsoft-365/powerpoint) や [Apple Keynote](https://www.apple.com/keynote/) など、機能豊富で汎用的なWYSIWYGのスライド作成ツールがたくさんあります。これらは非常に直感的で簡単に学ぶことができる一方で、アニメーションやチャート、その他の多くの機能を使った素晴らしいスライドを作成するのに非常によく機能します。では、なぜわざわざSlidevを作ったのでしょうか？
+
+Slidevの目的は、開発者が既に慣れ親しんでいるツールや技術を使って、プレゼンテーションをさらに面白く、表現力豊かに、そして魅力的にするための柔軟性と対話性を提供することです。
+
+WYSIWYGエディタで作業していると、スタイリングオプションに気を取られがちです。Slidevはコンテンツとビジュアルを分離することでそれを改善します。これによって、一度に1つのことに集中できるようになり、同時にコミュニティのテーマを再利用できるようになります。Slidevは他のスライドデッキビルダーに完全に取って代わろうとはしていません。それよりも、開発者コミュニティに応えることに重点をおいています。
+
+## [\#](https://ja.sli.dev/guide/why.html\#slidev) Slidev
+
+![](https://ja.sli.dev/screenshots/cover.png)
+
+ここでは、いくつかのSlidevのクールな機能を紹介します：
+
+## [\#](https://ja.sli.dev/guide/why.html\#markdown%E3%83%99%E3%83%BC%E3%82%B9) Markdownベース
+
+Slidevは拡張されたMarkdown形式を使用して、スライドを単一のプレーンテキストファイルに保存し、整理します。これにより、コンテンツの作成に集中することができます。またコンテンツとスタイルが分離されているので、異なるテーマに楽に切り替えることが可能です。
+
+詳しくは [Markdownシンタックス](https://ja.sli.dev/guide/syntax) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%B1%8A%E5%AF%8C%E3%81%AA%E3%83%86%E3%83%BC%E3%83%9E) 豊富なテーマ
+
+Slidevのテーマは、npmパッケージを使用して共有とインストールができます。そして1行設定するだけでテーマを適用することができます。
+
+[テーマギャラリー](https://ja.sli.dev/themes/gallery) や [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) をチェックしてみてください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%87%E3%83%99%E3%83%AD%E3%83%83%E3%83%91%E3%83%BC%E3%83%95%E3%83%AC%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC) デベロッパーフレンドリー
+
+Slidevは開発者のためにコードスニペットのファーストクラスのサポートを提供します。 [Prism](https://prismjs.com/) と [Shiki](https://github.com/shikijs/shiki) の両方をサポートし、ピクセルパーフェクトなシンタックスハイライトを実現しつつ、いつでもコードを修正することができます。 [Monaco editor](https://microsoft.github.io/monaco-editor/) を内蔵し、オートコンプリート、タイプホバーリング、TypeScriptの型チェックサポートにより、プレゼンテーションでのライブコーディングやデモも可能になります。
+
+詳しくは [シンタックスハイライト](https://ja.sli.dev/custom/highlighters) と [Monacoの設定](https://ja.sli.dev/custom/config-monaco) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E9%AB%98%E9%80%9F) 高速
+
+Slidevは [Vite](https://vitejs.dev/)、 [Vue 3](https://v3.ja.vuejs.org/)、そして [Windi CSS](https://windicss.org/) を利用しており、もっとも素晴らしいオーサリング体験を提供しています。あなたが行ったすべての変更は、 **即時に** あなたのスライドに反映されます。
+
+詳しくは [技術スタック](https://ja.sli.dev/guide/#%E6%8A%80%E8%A1%93%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF) をご覧ください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%A9%E3%82%AF%E3%83%86%E3%82%A3%E3%83%96-%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%97%E3%83%AC%E3%83%83%E3%82%B7%E3%83%96) インタラクティブ & エクスプレッシブ
+
+Markdownファイルの中に直接Vueのカスタムコンポーネントを記述することができます。また、プレゼンテーションの中でそれらとやりとりすることで、より面白く、より直感的にアイデアを表現することができます。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88) レコーディングサポート
+
+Slidevはビルトインのレコーディング機能とカメラービューを提供します。カメラービューを含めたプレゼンテーションを共有したり、画面とカメラで別々に録画・保存することも可能です。すべてSlidevだけで完結しており、追加のツールは必要ありません。
+
+詳しくは [レコーディング](https://ja.sli.dev/guide/recording) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E3%83%9D%E3%83%BC%E3%82%BF%E3%83%96%E3%83%AB) ポータブル
+
+コマンド1つでスライドをPDF、PNG、あるいはホスティング可能なSPAとしてエクスポートでき、どこへでも共有することができます。
+
+詳しくは [エクスポート](https://ja.sli.dev/guide/exporting) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%87%AA%E7%94%B1%E3%81%AB%E9%96%8B%E7%99%BA%E5%8F%AF%E8%83%BD) 自由に開発可能
+
+Web技術を使用していることにより、WebアプリでできることはSlidevでも実現可能です。例えば、WebGL、APIリクエスト、iframe、あるいはライブシェアリングなどが利用可能です。あなたの想像力次第でなんでもできます！
+
+## [\#](https://ja.sli.dev/guide/why.html\#%E8%A9%A6%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B) 試してみる
+
+百聞は一件にしかずということで、実際にSlidevを使ってみましょう。 コマンドを実行：
+
+```
+$ npm init slidev
+
+```
+
+またはプレビュー:
+
+Slidev First Preview Demo - YouTube
+
+[Photo image of Anthony Fu](https://www.youtube.com/channel/UCbzoLT8wqhI3iOAz1Nq0pvw?embeds_referring_euri=https%3A%2F%2Fja.sli.dev%2F)
+
+Anthony Fu
+
+7.34K subscribers
+
+[Slidev First Preview Demo](https://www.youtube.com/watch?v=eW7v-2ZKZOU)
+
+Anthony Fu
+
+Search
+
+Info
+
+Shopping
+
+Tap to unmute
+
+If playback doesn't begin shortly, try restarting your device.
+
+You're signed out
+
+Videos you watch may be added to the TV's watch history and influence TV recommendations. To avoid this, cancel and sign in to YouTube on your computer.
+
+CancelConfirm
+
+Share
+
+Include playlist
+
+An error occurred while retrieving sharing information. Please try again later.
+
+Watch later
+
+Share
+
+Copy link
+
+Watch on
+
+0:00
+
+/
+•Live
+
+•
+
+[Watch on YouTube](https://www.youtube.com/watch?v=eW7v-2ZKZOU "Watch on YouTube")
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Recording Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/recording.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0) レコーディング
+
+Slidevにはレコーディング機能とカメラビューが内蔵されています。これらを使って一箇所で簡単にプレゼンテーションをレコーディングすることができます。
+
+## [\#](https://ja.sli.dev/guide/recording.html\#%E3%82%AB%E3%83%A1%E3%83%A9%E3%83%93%E3%83%A5%E3%83%BC) カメラビュー
+
+カメラビューをプレゼンテーションで有効にするには、ナビゲーションパネルのボタンをクリックしてください。ドラッグで移動、右下のハンドラでサイズ変更も可能です。サイズと位置は `localStorage` に保存され、リフレッシュされても維持されるため、心配する必要はありません。
+
+Twitter Embed
+
+[Visit this post on X](https://twitter.com/youyuxi/status/1395006771027120133?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+[![](https://pbs.twimg.com/profile_images/1856284397072478208/hSEXLkPN_normal.jpg)](https://twitter.com/youyuxi?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+[Evan You](https://twitter.com/youyuxi?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+[@youyuxi](https://twitter.com/youyuxi?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+·
+
+[Follow](https://twitter.com/intent/follow?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html&screen_name=youyuxi)
+
+[View on X](https://twitter.com/youyuxi/status/1395006771027120133?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+.[@Slidevjs](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html) ' picture-in-picture + recording is legit cool - also automatically saves to separate slides/camera recordings as webm. All done as a web app ![👌](https://abs-0.twimg.com/emoji/v2/svg/1f44c.svg)
+
+[![Image](https://pbs.twimg.com/media/E1wO1o0XMAcNYhu?format=jpg&name=small)](https://x.com/youyuxi/status/1395006771027120133/photo/1)
+
+[1:21 PM · May 19, 2021](https://twitter.com/youyuxi/status/1395006771027120133?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+[X Ads info and privacy](https://help.twitter.com/en/twitter-for-websites-ads-info-and-privacy)
+
+[709](https://twitter.com/intent/like?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html&tweet_id=1395006771027120133) [Reply](https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html&in_reply_to=1395006771027120133)
+
+Copy link
+
+[Read 8 replies](https://twitter.com/youyuxi/status/1395006771027120133?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1395006771027120133%7Ctwgr%5E1bef56c3f291ef7b51d5a82395b36389dccd425f%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Frecording.html)
+
+## [\#](https://ja.sli.dev/guide/recording.html\#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0-1) レコーディング
+
+ナビゲーションパネルのボタンをクリックすると、ダイアログが表示されます。ここでは、スライドにカメラを埋め込んで録画するか、2つの動画ファイルに分離して録画するかを選択することができます。
+
+この機能は [RecordRTC](https://github.com/muaz-khan/RecordRTC) によって提供され、 [WebRTC API](https://webrtc.org/) を使用しています。
+
+![](https://ja.sli.dev/screenshots/recording.png)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+Twitter Widget Iframe
+
+## Slidev Animation Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) アニメーション
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) クリックアニメーション
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-click) `v-click`
+
+要素に対して"クリックアニメーション"を適用するには、 `v-click` ディレクティブか `<v-click>` コンポーネントを使用することができます。
+
+```
+# Hello
+
+<!-- コンポーネントの使い方: "次へ"を押すまで、ここから下の内容は表示されません -->
+<v-click>
+
+Hello World
+
+</v-click>
+
+<!-- ディレクティブの使い方: 2回目の"次へ"を押すまで、ここから下の内容は表示されません -->
+<div v-click class="text-xl p-2">
+
+Hey!
+
+</div>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-after) `v-after`
+
+`v-after` は `v-click` に似ていますが、直前の `v-click` がトリガーされたときに要素を可視化します。
+
+```
+<div v-click>Hello</div>
+<div v-after>World</div>
+
+```
+
+"次へ"ボタンを押した時に、 `Hello` と `World` の両方が一緒に表示されます。
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-click-hide) `v-click-hide`
+
+`v-click` と同じですが、要素を表示するのではなく、クリックした後に要素を非表示にします。
+
+```
+<div v-click-hide>Hello</div>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#v-clicks) `v-clicks`
+
+`v-clicks` はコンポーネントとしてのみ提供されています。これは `v-click` ディレクティブをそのすべての子要素に適用するためのショートハンドです。特にリストを扱う場合に便利です。
+
+```
+<v-clicks>
+
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+
+</v-clicks>
+
+```
+
+"次へ"をクリックするたびに、項目が表示されるようになります。
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88) カスタムクリックカウント
+
+デフォルトでは、Slidevは次のスライドに進む前に必要なステップ数をカウントします。 `clicks` というフロントマターオプションを記述することで、この設定をオーバーライドできます。
+
+```
+---
+# このスライドでは、次のスライドに進むまでに10回クリックする
+clicks: 10
+---
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E4%B8%A6%E3%81%B3%E6%9B%BF%E3%81%88) 並び替え
+
+ディレクティブにクリックインデックスを渡すことで、公開する順番をカスタマイズすることができます。
+
+```
+<div v-click>1</div>
+<div v-click>2</div>
+<div v-click>3</div>
+
+```
+
+```
+<!-- 順番が逆転する -->
+<div v-click="3">1</div>
+<div v-click="2">2</div>
+<div v-click="1">3</div>
+
+```
+
+```
+---
+clicks: 3
+---
+
+<!-- 3回クリックした後に見えるようになる -->
+<v-clicks at="3">
+  <div>Hi</div>
+</v-clicks>
+
+```
+
+### [\#](https://ja.sli.dev/guide/animations.html\#%E8%A6%81%E7%B4%A0%E3%81%AE%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B8%E3%82%B7%E3%83%A7%E3%83%B3) 要素のトランジション
+
+要素に `v-click` ディレクティブを適用すると、 `slidev-vclick-target` というクラス名が付与されます。要素が非表示になった場合、クラス名 `slidev-vclick-hidden` が付与されます。例：
+
+```
+<div class="slidev-vclick-target slidev-vclick-hidden">テキスト</div>
+
+```
+
+クリックすると、以下のようになります
+
+```
+<div class="slidev-vclick-target">テキスト</div>
+
+```
+
+デフォルトでは、これらのクラスにはわずかな透明度のトランジションが適用されます。
+
+```
+// デフォルト
+
+.slidev-vclick-target {
+  transition: opacity 100ms ease;
+}
+
+.slidev-vclick-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+```
+
+トランジション効果をカスタマイズするために、カスタムスタイルシートでそれらをオーバーライドすることができます。
+
+例えば、スケールアップのトランジションは次のようにして実現することができます：
+
+```
+// styles.css
+
+.slidev-vclick-target {
+  transition: all 500ms ease;
+}
+
+.slidev-vclick-hidden {
+  transform: scale(0);
+}
+
+```
+
+特定のスライドもしくはレイアウトにのみアニメーションを適用する場合
+
+```
+.slidev-page-7,
+.slidev-layout.my-custom-layout {
+  .slidev-vclick-target {
+    transition: all 500ms ease;
+  }
+
+  .slidev-vclick-hidden {
+    transform: scale(0);
+  }
+}
+
+```
+
+詳細は [スタイルのカスタマイズ](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) モーション
+
+Slidevは [@vueuse/motion](https://motion.vueuse.org/) を内蔵しています。任意の要素にモーションを適用するために `v-motion` ディレクティブを使用することができます。例：
+
+```
+<div
+  v-motion
+  :initial="{ x: -80 }"
+  :enter="{ x: 0 }">
+  Slidev
+</div>
+
+```
+
+`Slidev` というテキストは初期化時に `-80px` から元の位置へ移動します。
+
+> 注: Slidevはパフォーマンスのために次のスライドをプリロードします、つまり、ページに遷移する前にアニメーションが始まる可能性があります。正しく動作させるために、特定のスライドに対してプリロードを無効にすることができます。
+>
+> ```
+> ---
+> preload: false
+> ---
+>
+> ```
+>
+> もしくは要素のライフサイクルを `v-if` で制御することで、きめ細やかな制御を行うこともできます。
+>
+> ```
+> <div
+>   v-if="$slidev.nav.currentPage === 7"
+>   v-motion
+>   :initial="{ x: -80 }"
+>   :enter="{ x: 0 }">
+>   Slidev
+> </div>
+>
+> ```
+
+詳細： [デモ](https://sli.dev/demo/starter/7) \| [@vueuse/motion](https://motion.vueuse.org/) \| [v-motion](https://motion.vueuse.org/directive-usage.html) \| [Presets](https://motion.vueuse.org/presets.html)
+
+## [\#](https://ja.sli.dev/guide/animations.html\#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B8%E3%82%B7%E3%83%A7%E3%83%B3) ページのトランジション
+
+> 現在のバージョンでは、スライドのビルトインサポートはまだ提供されていません。次のメジャーバージョンでサポートする予定です。それまでは、カスタムスタイルやライブラリを使ってスライドを作成することができます。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Markdown Syntax
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/syntax.html\#markdown%E3%82%B7%E3%83%B3%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B9) Markdownシンタックス
+
+スライドは **1つのマークダウンファイル** (デフォルト： `./slides.md`) の中に記述されます。
+
+[Markdownの機能](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) は通常通り使用することができ、インラインHTMLとVueコンポーネントが追加でサポートされています。 [Windi CSS](https://windicss.org/) を使ったスタイリングもサポートされています。スライドを区切るには改行で囲まれた `---` を使用してください。
+
+````
+# Slidev
+
+Hello, World!
+
+---
+
+# Page 2
+
+コードブロックを直接使用してハイライト表示する
+
+//```ts
+console.log('Hello, World!')
+//```
+
+---
+
+# Page 3
+
+Windi CSSとVueコンポーネントを直接使用して、スライドをスタイリングし、リッチにすることができます。
+
+<div class="p-3">
+  <Tweet id="20" />
+</div>
+
+````
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC-%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) フロントマター & レイアウト
+
+スライドのセパレータを [フロントマターブロック](https://jekyllrb.com/docs/front-matter/) に変換して、各スライドのレイアウトやその他のメタデータを指定します。各フロントマターはトリプルダッシュで始まり、トリプルダッシュで終わります。その間にあるテキストは [YAML](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started/) 形式のデータオブジェクトになります。例：
+
+```
+---
+layout: cover
+---
+
+# Slidev
+
+これはカバーページです。
+
+---
+layout: center
+background: './images/background-1.png'
+class: 'text-white'
+---​
+
+# Page 2
+
+これはレイアウト`center`とバックグラウンドイメージが指定されたページです。
+
+---
+
+# Page 3
+
+これはいかなる追加のメタデータもない、デフォルトのページです。
+
+```
+
+詳細は [カスタマイズ](https://ja.sli.dev/custom/) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%B3%E3%83%BC%E3%83%89%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF) コードブロック
+
+Slidevを開発した大きな理由の1つは、自分のコードをスライド上で正しく見せる必要があるためです。SlidevではMarkdownフレーバーなコードブロックを使って、意図した通りにコードをハイライトすることができます。
+
+````
+//```ts
+console.log('Hello, World!')
+//```
+
+````
+
+Slidevはシンタックスハイライターとして [Prism](http://prismjs.com/) と [Shiki](https://github.com/shikijs/shiki) をサポートしています。詳細は [シンタックスハイライト](https://ja.sli.dev/custom/highlighters) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E8%A1%8C%E3%81%AE%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88) 行のハイライト
+
+特定の行をハイライトするためには、ブラケット `{}` の中に単純に行番号を追加するだけです。行番号のカウントは1から始まります。
+
+````
+//```ts {2,3}
+function add(
+  a: Ref<number> | number,
+  b: Ref<number> | number
+) {
+  return computed(() => unref(a) + unref(b))
+}
+//```
+
+````
+
+ハイライトする行を複数ステップに分けて変更するには、 `|` を使用して行番号を分割してください。例：
+
+````
+//```ts {2-3|5|all}
+function add(
+  a: Ref<number> | number,
+  b: Ref<number> | number
+) {
+  return computed(() => unref(a) + unref(b))
+}
+//```
+
+````
+
+このサンプルでは、はじめに `a: Ref<number> | number` と `b: Ref<number> | number` を、次にクリックがされた後に `return computed(() => unref(a) + unref(b))` を、最後にコードブロック全体をハイライトします。詳細は [アニメーションガイド](https://ja.sli.dev/guide/animations) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#monaco%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF) Monacoエディタ
+
+プレゼンテーション中になんらかの変更を加えたいときは、言語名の後ろに `{monaco}` を追加するだけで、ブロックが完全なMonacoエディタに切り替わります！
+
+````
+//```ts {monaco}
+console.log('HelloWorld')
+//```
+
+````
+
+詳細は [Monacoの設定](https://ja.sli.dev/custom/config-monaco) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) 埋め込みスタイル
+
+Markdownで直接 `<style>` タグを使用すると、 **現在のスライド** のスタイルをオーバーライドすることができます。
+
+```
+# このページはRed
+
+<style>
+h1 {
+  color: red
+}
+</style>
+
+---
+
+# 次のスライドには適用されない
+
+```
+
+Markdown内の `<style>` タグは常に [scoped](https://vue-loader.vuejs.org/guide/scoped-css.html) です。グローバルにスタイルをオーバーライドする場合は、 [スタイル](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) を参照してください。
+
+[Windi CSS](https://windicss.org/) を搭載しているため、 ネストしたCSSや [directives](https://windicss.org/features/directives.html) (e.g. `@apply`)を直接利用することができます。
+
+```
+# Slidev
+
+> Hello `world`
+
+<style>
+blockquote {
+  code {
+    @apply text-teal-500 dark:text-teal-400;
+  }
+}
+</style>
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E9%9D%99%E7%9A%84%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88) 静的アセット
+
+Markdownで書くのと同じように、リモートまたはローカルのURLを指定して画像を使用することができます。
+
+リモートのアセットについては、ビルトインの [`vite-plugin-remote-assets`](https://github.com/antfu/vite-plugin-remote-assets) が初回実行時にディスクにキャッシュするため、あとで大きなサイズの画像を読み込み場合でもすぐに読み込むことができます。
+
+```
+![リモートの画像](https://sli.dev/favicon.png)
+
+```
+
+ローカルのアセットについては、 [`public` フォルダ](https://ja.sli.dev/custom/directory-structure#public) に格納し、 **頭にスラッシュ** をつけて参照します。
+
+```
+![ローカルの画像](/pic.png)
+
+```
+
+カスタムサイズやスタイルを適用したい場合は、 `<img>` タグに変換することもできます。
+
+```
+<img src="/pic.png" class="m-40 h-40 rounded shadow" />
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%8E%E3%83%BC%E3%83%88) ノート
+
+各スライドにメモを取ることもできます。メモは [プレゼンターモード](https://ja.sli.dev/guide/presenter-mode) に表示され、プレゼンテーションの際に参照することができます。
+
+Markdownでは、各スライドの最後のコメントブロックはノートとして扱われます。
+
+```
+---
+layout: cover
+---
+
+# Page 1
+
+これはカバーページです。
+
+<!-- これはノートです -->
+
+---
+
+# Page 2
+
+<!-- これは、スライドの内容より前にあるため、ノートではありません。 -->
+
+2ページ目
+
+<!--
+これもまたノートです
+-->
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3) アイコン
+
+Slidevを使用すると、Markdownの中でほとんどすべての人気のあるオープンソースのアイコンセットに **直接** アクセスすることができます。 [`vite-plugin-icons`](https://github.com/antfu/vite-plugin-icons) と [Iconify](https://iconify.design/) によって提供されています。
+
+命名は [Iconify](https://iconify.design/) の `{collection-name}-{icon-name}` の形式に従います。例：
+
+- `<mdi-account-circle />` \-  from [Material Design Icons](https://github.com/Templarian/MaterialDesign)
+- `<carbon-badge />` \-  from [Carbon](https://github.com/carbon-design-system/carbon/tree/main/packages/icons)
+- `<uim-rocket />` \-  from [Unicons Monochrome](https://github.com/Iconscout/unicons)
+- `<twemoji-cat-with-tears-of-joy />` \-  from [Twemoji](https://github.com/twitter/twemoji)
+- `<logos-vue />` \-  from [SVG Logos](https://github.com/gilbarbara/logos)
+- その他にも。..
+
+利用可能なすべてのアイコンは [Icônes](https://icones.js.org/) で閲覧・検索できます。
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3%E3%81%AE%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%B0) アイコンのスタイリング
+
+他のHTML同様にアイコンをスタイルすることができます。例：
+
+```
+<uim-rocket />
+<uim-rocket class="text-3xl text-red-400 mx-2" />
+<uim-rocket class="text-3xl text-orange-400 animate-ping" />
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%B9%E3%83%AD%E3%83%83%E3%83%88) スロット
+
+> v0.18から使用可能です
+
+レイアウトによっては、 [名前付きスロット](https://v3.ja.vuejs.org/guide/component-slots.html#%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AB%E3%83%8F%E3%82%99%E3%83%83%E3%82%AF%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84) を使用して、複数のコントリビューションポイントを提供できます。
+
+例えば、 [`two-cols` レイアウト](https://github.com/slidevjs/slidev/blob/main/packages/client/layouts/two-cols.vue) では、左 ( `default` スロット）と右 ( `right` スロット）の2つのカラムを並べることができるようになります。
+
+```
+---
+layout: two-cols
+---
+
+<template v-slot:default>
+
+# Left
+
+これは左側に表示されます。
+
+</template>
+<template v-slot:right>
+
+# Right
+
+これは右側に表示されます。
+
+</template>
+
+```
+
+### 左
+
+これは左側に表示されます。
+
+### 右
+
+これは右側に表示されます。
+
+またスロット名のショートハンドシンタックスシュガー `::name::` も用意されています。次の例は前に示した例と全く同じように動作します。
+
+```
+---
+layout: two-cols
+---
+
+# Left
+
+これは左側に表示されます。
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+```
+
+またデフォルトのスロットを明示的に指定し、カスタムオーダーで提供することも可能です。
+
+```
+---
+layout: two-cols
+---
+
+::right::
+
+# Right
+
+これは右側に表示されます。
+
+::default::
+
+# Left
+
+これは左側に表示されます。
+
+```
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E8%A8%AD%E5%AE%9A) 設定
+
+必要な設定はすべてMarkdownファイルで定義することができます。 例：
+
+```
+---
+theme: seriph
+layout: cover
+background: 'https://source.unsplash.com/1600x900/?nature,water'
+---
+
+# Slidev
+
+これはカバーページです。
+
+```
+
+詳細は [フロントマターの設定](https://ja.sli.dev/custom/#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#latex) LaTeX
+
+Slidevは [KaTeX](https://katex.org/) によってLaTeXをサポートしています。
+
+Twitter Embed
+
+[Visit this post on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[![](https://pbs.twimg.com/profile_images/1388805947691134976/bIiEQTyK_normal.jpg)](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[Slidev](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[@Slidevjs](https://twitter.com/Slidevjs?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+·
+
+[Follow](https://twitter.com/intent/follow?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&screen_name=Slidevjs)
+
+[View on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+![🚀](https://abs-0.twimg.com/emoji/v2/svg/1f680.svg) Slidev v0.9.0 Released
+
+![🤹](https://abs-0.twimg.com/emoji/v2/svg/1f939.svg) Animations / Motion by [@vueuse](https://twitter.com/VueUse?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)'s motion package
+![📰](https://abs-0.twimg.com/emoji/v2/svg/1f4f0.svg) Textual diagrams by Mermaid.js
+
+![👇](https://abs-0.twimg.com/emoji/v2/svg/1f447.svg) Play the demo here!
+[https://sli.dev/demo/starter](https://sli.dev/demo/starter)
+
+![](https://pbs.twimg.com/tweet_video_thumb/E1JAtTwVcAETfnF.jpg)
+
+GIF
+
+[Watch on X](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[10:33 PM · May 11, 2021](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+[X Ads info and privacy](https://help.twitter.com/en/twitter-for-websites-ads-info-and-privacy)
+
+[311](https://twitter.com/intent/like?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&tweet_id=1392246507793915904) [Reply](https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html&in_reply_to=1392246507793915904)
+
+Copy link
+
+[Read 6 replies](https://twitter.com/Slidevjs/status/1392246507793915904?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1392246507793915904%7Ctwgr%5E447a738954273b5c7ac021322f0f9c4963487e75%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fja.sli.dev%2Fguide%2Fsyntax.html)
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%82%A4%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3) インライン
+
+インラインで表示する場合は、LaTeXの両側を1つの `$` で囲います。
+
+```
+$\sqrt{3x-1}+(1+x)^2$
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF) ブロック
+
+ブロックで表示するには、2つの ( `$$`)を使います。このモードではより大きな記号を使用し、結果を中央に配置します。
+
+```
+$$
+\begin{array}{c}
+
+\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
+= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
+
+\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
+
+\nabla \cdot \vec{\mathbf{B}} & = 0
+
+\end{array}
+$$
+
+```
+
+詳細： [デモ](https://sli.dev/demo/starter/8) \| [KaTeX](https://katex.org/) \| [`markdown-it-katex`](https://github.com/waylonflinn/markdown-it-katex)
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E5%9B%B3%E5%BD%A2) 図形
+
+[Mermaid](https://mermaid-js.github.io/mermaid) を利用して、Markdownのテキスト記述から図 / グラフを作成することも可能です。
+
+`mermaid` として指定されたコードブロックは図形に変換されます。 例：
+
+````
+//```mermaid
+sequenceDiagram
+  Alice->John: Hello John, how are you?
+  Note over Alice,John: A typical interaction
+//```
+
+````
+
+さらにオプションオブジェクトを渡すことで、スケーリングやテーマを指定することができます。オブジェクトのシンタックスはJavaScriptのオブジェクトリテラルで、文字列には引用符（ `'`)を、キーの間には（ `,`)を追加する必要があります。
+
+````
+//```mermaid {theme: 'neutral', scale: 0.8}
+graph TD
+B[Text] --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+//```
+
+````
+
+詳細： [デモ](https://sli.dev/demo/starter/9) \| [Mermaid](https://mermaid-js.github.io/mermaid)
+
+## [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%9E%E3%83%AB%E3%83%81%E3%83%97%E3%83%AB%E3%82%A8%E3%83%B3%E3%83%88%E3%83%AA%E3%83%BC) マルチプルエントリー
+
+> v0.15から使用可能です
+
+`slides.md` を複数のファイルに分割して、好きなように整理することができます。
+
+`slides.md` :
+
+```
+# Page 1
+
+これは通常のページです。
+
+---
+src: ./subpage2.md
+---
+
+<!-- このページは'./subpage2.md'から読み込まれます -->
+インラインコンテンツは無視されます
+
+```
+
+`subpage2.md` :
+
+```
+# Page 2
+
+このページは別のファイルのものです
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E3%83%9E%E3%83%BC%E3%82%B8) フロントマターのマージ
+
+フロントマターはメインのエントリーと外部のMarkdownページの両方から指定することができます。もし同じキーがある場合は、 **メインエントリに記載されている内容がより優先度が高くなります**。例：
+
+`slides.md` :
+
+```
+---
+src: ./cover.md
+background: https://sli.dev/bar.png
+class: text-center
+---
+
+```
+
+`cover.md` :
+
+```
+---
+layout: cover
+background: https://sli.dev/foo.png
+---
+
+# カバー
+
+カバーページ
+
+```
+
+以下のページと同じように評価されます：
+
+```
+---
+layout: cover
+background: https://sli.dev/bar.png
+class: text-center
+---
+
+# カバー
+
+カバーページ
+
+```
+
+### [\#](https://ja.sli.dev/guide/syntax.html\#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE%E5%86%8D%E5%88%A9%E7%94%A8) ページの再利用
+
+マルチエントリーにより、ページの再利用が容易になります。例：
+
+```
+---
+src: ./cover.md
+---
+
+---
+src: ./intro.md
+---
+
+---
+src: ./content.md
+---
+
+---
+# reuse
+src: ./content.md
+---
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+Twitter Widget Iframe
+
+## Using Themes in Slidev
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/themes/use.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B) テーマを使用する
+
+Slidevのテーマを変更するのは驚くほど簡単です。フロントマターに `theme:` フィールドを追加するだけです。
+
+```
+---
+theme: seriph
+---
+
+```
+
+サーバーを起動すると、テーマの自動インストールを促すメッセージが表示されます。
+
+```
+? The theme "@slidev/theme-seriph" was not found in your project, do you want to install it now? › (Y/n)
+
+```
+
+あるいは以下の方法で手動でテーマをインストールします
+
+```
+$ npm install @slidev/theme-seriph
+
+```
+
+以上、新しいテーマをお楽しみください。各テーマの使い方の詳細については、テーマのREADMEを参照してください。
+
+あなたのテーマを共有したいですか？ [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) を参照してください。
+
+## [\#](https://ja.sli.dev/themes/use.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E5%8F%96%E3%82%8A%E5%87%BA%E3%81%97) テーマの取り出し
+
+現在のテーマを完全に制御したい場合は、ローカルファイルシステム上に **取り出し** して好きなように変更することができます。次のコマンドを実行します。
+
+```
+$ slidev theme eject
+
+```
+
+現在使用しているテーマを `./theme` に出力し、フロントマターを次のように変更します。
+
+```
+---
+theme: ./theme
+---
+
+```
+
+また、これは既存のテーマをベースにテーマを作成するのに参考になります。その際は、元のテーマと作者について言及することを忘れないでください 😃
+
+## [\#](https://ja.sli.dev/themes/use.html\#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%83%86%E3%83%BC%E3%83%9E) ローカルテーマ
+
+前のセクションでおわかりのように、プロジェクトにローカルテーマを指定することができます。themeフィールドに **相対パス** を指定します。
+
+```
+---
+theme: ./path/to/theme
+---
+
+```
+
+詳細は [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Installation Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/install.html\#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB) インストール
+
+## [\#](https://ja.sli.dev/guide/install.html\#%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88) スターターテンプレート
+
+> Slidevは [**Node.js >=14.0**](https://nodejs.org/) で動作します
+
+まずは公式スターターテンプレートを利用してみてください。
+
+NPMで使用する：
+
+```
+$ npm init slidev@latest
+
+```
+
+Yarnで使用する：
+
+```
+$ yarn create slidev
+
+```
+
+表示されるプロンプトに従って操作をすると、スライドショーが [http://localhost:3030/](http://localhost:3030/) で自動的に立ち上がります。
+
+スターターテンプレートには基本的な設定やSlidevの使い方を説明した簡単なデモも収録されています。
+
+## [\#](https://ja.sli.dev/guide/install.html\#%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB) マニュアルインストール
+
+Slidevを手動でインストールしたい、または既存のプロジェクトに統合したい場合は、次のようにします：
+
+```
+$ npm install @slidev/cli @slidev/theme-default
+
+```
+
+```
+$ touch slides.md
+
+```
+
+```
+$ npx slidev
+
+```
+
+> [pnpm](https://pnpm.io/) を使用している場合、Slidevを正しく動作させるために [shamefully-hoist](https://pnpm.io/npmrc#shamefully-hoist) オプションを有効にする必要があることに注意してください。
+>
+> ```
+> echo 'shamefully-hoist=true' >> .npmrc
+>
+> ```
+
+## [\#](https://ja.sli.dev/guide/install.html\#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB) グローバルインストール
+
+> v0.14から使用可能です
+
+以下のコマンドで、Slidevをグローバルにインストール可能です。
+
+```
+$ npm i -g @slidev/cli
+
+```
+
+毎回プロジェクトを作成することなく、どこでも `slidev` コマンドを使用できるようになります。
+
+```
+$ slidev
+
+```
+
+このコマンドはローカルの `@slidev/cli` が `node_modules` にあれば、それを実行します。
+
+## [\#](https://ja.sli.dev/guide/install.html\#docker%E4%B8%8A%E3%81%AB%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B) Docker上にインストールする
+
+コンテナでプレゼンテーションを迅速に実行する必要がある場合、あらかじめ組み込まれている [docker](https://hub.docker.com/r/stig124/slidev) イメージ（メンテナー： [stig124](https://github.com/Stig124)）を使うか、あるいは自分でビルドします。
+
+詳しくは [slidevjs/container repo](https://github.com/slidevjs/container) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Learning Resources
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/resources/learning.html\#%E5%AD%A6%E7%BF%92%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9) 学習リソース
+
+## [\#](https://ja.sli.dev/resources/learning.html\#%E8%8B%B1%E8%AA%9E) 英語
+
+### [\#](https://ja.sli.dev/resources/learning.html\#%E5%8B%95%E7%94%BB) 動画
+
+Slidev - one of the best presentation software and it is free! - YouTube
+
+[Photo image of Federico Tartarini](https://www.youtube.com/channel/UCRjhrVMfeAurqHm4BnTNgyw?embeds_referring_euri=https%3A%2F%2Fja.sli.dev%2F)
+
+Federico Tartarini
+
+9.84K subscribers
+
+[Slidev - one of the best presentation software and it is free!](https://www.youtube.com/watch?v=oSgM6GoSwyY)
+
+Federico Tartarini
+
+Search
+
+Watch later
+
+Share
+
+Copy link
+
+Info
+
+Shopping
+
+Tap to unmute
+
+If playback doesn't begin shortly, try restarting your device.
+
+More videos
+
+## More videos
+
+You're signed out
+
+Videos you watch may be added to the TV's watch history and influence TV recommendations. To avoid this, cancel and sign in to YouTube on your computer.
+
+CancelConfirm
+
+Share
+
+Include playlist
+
+An error occurred while retrieving sharing information. Please try again later.
+
+[Watch on](https://www.youtube.com/watch?v=oSgM6GoSwyY&embeds_referring_euri=https%3A%2F%2Fja.sli.dev%2F)
+
+0:00
+
+0:00 / 15:10
+•Live
+
+•
+
+[Watch on YouTube](https://www.youtube.com/watch?v=oSgM6GoSwyY "Watch on YouTube")
+
+### [\#](https://ja.sli.dev/resources/learning.html\#%E8%A8%98%E4%BA%8B) 記事
+
+- [Tips To Turn R Markdown Into Slidev Presentation](https://yutani.rbind.io/post/2021-06-05-tips-to-turn-r-markdown-into-slidev-presentation/) by Hiroaki Yutani
+
+## [\#](https://ja.sli.dev/resources/learning.html\#%E4%B8%AD%E6%96%87) 中文
+
+- [Slidev：一个用Markdown写slides的神器](https://zhuanlan.zhihu.com/p/372729473) by [梦里风林](https://www.zhihu.com/people/meng-li-feng-lin)
+- [神器！这款开源项目可以让你使用 Markdown 来做 PPT！](https://zhuanlan.zhihu.com/p/377567327) by [Github掘金计划](https://www.zhihu.com/people/github-stars)
+- [【用 markdown 写 Slide!】神器 Slidev 的安装及 bug 解决](https://blog.csdn.net/weixin_43828250/article/details/116664775) by HaloHoohoo
+
+## [\#](https://ja.sli.dev/resources/learning.html\#%E6%97%A5%E6%9C%AC%E8%AA%9E) 日本語
+
+- [開発者のためのスライド作成ツール Slidev がすごい](https://zenn.dev/ryo_kawamata/articles/introduce-slidev) by [ryo\_kawamata](https://zenn.dev/ryo_kawamata)
+- [Markdownでオシャレなスライドを作るSli.dev](https://qiita.com/e99h2121/items/a115f8865a0dc21bb462) by [Nobuko YAMADA](https://qiita.com/e99h2121)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Font Customization
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/fonts.html\#%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88) フォント
+
+> v0.20から使用可能です
+
+HTMLやCSSを使ってスライドのフォントやスタイルを自由にカスタマイズすることができますが、Slidevはそれらを楽に扱うための便利な方法も提供しています。
+
+フロントマターで、以下のように設定します。
+
+```
+---
+fonts:
+  # basically the text
+  sans: 'Robot'
+  # use with `font-serif` css class from windicss
+  serif: 'Robot Slab'
+  # for code blocks, inline code, etc.
+  mono: 'Fira Code'
+---
+
+```
+
+フォントは **[Google Fonts](https://fonts.google.com/) から自動的にインポート** されます。つまり、Google Fontsで利用可能なフォントを直接利用することができます。
+
+## [\#](https://ja.sli.dev/custom/fonts.html\#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88) ローカルフォント
+
+デフォルトでは、Slidevは `fonts` で指定されたすべてのフォントをGoogle Fontsのものとして認識します。ローカルのフォントを使用したい場合は、 `fonts.local` を指定して、自動インポートを無効にします。
+
+```
+---
+fonts:
+  # CSSにおけるfont-familyの指定のように、`,`を使用することでフォールバックのためのフォントを複数指定できます。
+  sans: 'Helvetica Neue,Robot'
+  # 'Helvetica Neue'をローカルフォントとして指定します。
+  local: 'Helvetica Neue'
+---
+
+```
+
+## [\#](https://ja.sli.dev/custom/fonts.html\#%E5%A4%AA%E3%81%95%E3%81%A8%E6%96%9C%E4%BD%93) 太さと斜体
+
+デフォルトでは、Slidevは各フォントに対して、 `200`、 `400`、 `600` の3つの太さをインポートします。次のように指定することができます：
+
+```
+---
+fonts:
+  sans: 'Robot'
+  # デフォルト
+  weights: '200,400,600'
+  # デフォルトで`false`になっている斜体フォントをインポートします。
+  italic: false
+---
+
+```
+
+この設定はすべてのWebフォントに適用されます。各フォントの太さをより細かく制御するには、 [HTML](https://ja.sli.dev/custom/directory-structure#index-html) とCSSで手動でインポートする必要があります。
+
+## [\#](https://ja.sli.dev/custom/fonts.html\#%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88%E3%81%AE%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF) フォントのフォールバック
+
+ほとんどのケースでは、"特別なフォント"を指定するだけで、Slidevがフォントフォールバックを追加してくれます。例：
+
+```
+---
+fonts:
+  sans: 'Robot'
+  serif: 'Robot Slab'
+  mono: 'Fira Code'
+---
+
+```
+
+これは次のようになります
+
+```
+.font-sans {
+  font-family: "Robot",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+.font-serif {
+  font-family: "Robot Slab",ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;
+}
+.font-mono {
+  font-family: "Fira Code",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+```
+
+フォントフォールバックを無効化するには、次のように設定します。
+
+```
+---
+fonts:
+  mono: 'Fira Code, monospace'
+  fallback: false
+---
+
+```
+
+## [\#](https://ja.sli.dev/custom/fonts.html\#%E3%83%97%E3%83%AD%E3%83%90%E3%82%A4%E3%83%80%E3%83%BC) プロバイダー
+
+- オプション： `google` \| `none`
+- デフォルト： `google`
+
+現時点ではGoogle Fontsのみをサポートしていますが、将来的にはほかのプロバイダーも追加する予定です。 `none` を指定すると、自動インポート機能を完全に無効にし、すべてのフォントをローカルに扱えるようになります。
+
+```
+---
+fonts:
+  provider: 'none'
+---
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Theme Gallery
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/themes/gallery.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%82%AE%E3%83%A3%E3%83%A9%E3%83%AA%E3%83%BC) テーマギャラリー
+
+Slidevで利用できる素晴らしいテーマはこちらでご覧いただけます。
+
+詳細は [テーマを使用する](https://ja.sli.dev/themes/use) または [テーマを作成する](https://ja.sli.dev/themes/write-a-theme) を参照してください。テーマをコミュニティで共有しましょう！
+
+## [\#](https://ja.sli.dev/themes/gallery.html\#%E5%85%AC%E5%BC%8F%E3%83%86%E3%83%BC%E3%83%9E) 公式テーマ
+
+[![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-default/01.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-default/02.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-default/06.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-default/08.png)](https://github.com/slidevjs/themes/tree/main/packages/theme-default)
+
+Default
+
+The minimalism default theme for Slidev
+
+[Anthony Fu](https://github.com/antfu)
+
+[![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-seriph/01.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-seriph/02.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-seriph/03.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-seriph/08.png)](https://github.com/slidevjs/themes/tree/main/packages/theme-seriph)
+
+Seriph
+
+A more formal looking theme using Serif fonts
+
+[Anthony Fu](https://github.com/antfu)
+
+[![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-apple-basic/01.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-apple-basic/02.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-apple-basic/03.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-apple-basic/09.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-apple-basic/11.png)](https://github.com/slidevjs/themes/tree/main/packages/theme-apple-basic)
+
+Apple Basic
+
+Inspired by the Basic Black/White theme from Apple Keynote
+
+[Jeremy Meissner](https://github.com/JeremyMeissner)
+
+[![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-bricks/01.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-bricks/04.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-bricks/06.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-bricks/05.png)](https://github.com/slidevjs/themes/tree/main/packages/theme-bricks)
+
+Bricks
+
+Building bricks
+
+[iiiiiiinès](https://github.com/iiiiiiines)
+
+[![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-shibainu/01.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-shibainu/03.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-shibainu/04.png)![](https://cdn.jsdelivr.net/gh/slidevjs/themes@main/screenshots/theme-shibainu/09.png)](https://github.com/slidevjs/themes/tree/main/packages/theme-shibainu)
+
+Shibainu
+
+Meow!
+
+[iiiiiiinès](https://github.com/iiiiiiines)
+
+## [\#](https://ja.sli.dev/themes/gallery.html\#%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%83%86%E3%82%A3%E3%83%86%E3%83%BC%E3%83%9E) コミュニティテーマ
+
+コミュニティで作成されたキュレーションテーマを紹介します。
+
+[![](https://i.imgur.com/grKiGIK.png)![](https://i.imgur.com/tAvcf5S.png)![](https://i.imgur.com/mj42LcL.png)![](https://i.imgur.com/41QWv3c.png)](https://github.com/danestves/slidev-theme-flayyer)
+
+Flayyer
+
+This theme is inspired by the layout of Flayyer and the way that it works.
+
+[Daniel Esteves](https://github.com/danestves)
+
+[![](https://cdn.jsdelivr.net/gh/nico-bachner/slidev-theme-geist@main/example-export/01.png)![](https://cdn.jsdelivr.net/gh/nico-bachner/slidev-theme-geist@main/example-export/02.png)![](https://cdn.jsdelivr.net/gh/nico-bachner/slidev-theme-geist@main/example-export/03.png)![](https://cdn.jsdelivr.net/gh/nico-bachner/slidev-theme-geist@main/example-export/04.png)![](https://cdn.jsdelivr.net/gh/nico-bachner/slidev-theme-geist@main/example-export/05.png)](https://github.com/nico-bachner/slidev-theme-geist)
+
+Vercel
+
+A theme based on Vercel's design system.
+
+[Nico Bachner](https://github.com/nico-bachner)
+
+[![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/1-layout-intro.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/2-layout-image-header-intro-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/3-layout-dynamic-image-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/5-layout-dynamic-image-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/7-layout-dynamic-image-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/8-layout-center-image-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/9-layout-dynamic-image-light.png)![](https://cdn.jsdelivr.net/gh/lightvue/slidev-theme-light-icons@master/screenshot/10-layout-left-image-light.png)](https://github.com/lightvue/slidev-theme-light-icons)
+
+Light Icons
+
+A simple, light and elegant theme for Slidev, combined together with creative layouts, custom components & fonts
+
+[Pulkit Aggarwal](https://github.com/BashCloud)
+
+[![](https://i.imgur.com/BX3TpEc.png)![](https://i.imgur.com/mqqRi1F.png)![](https://i.imgur.com/fwm2785.png)![](https://i.imgur.com/m8eemKt.png)](https://github.com/moudev/slidev-theme-purplin)
+
+Purplin
+
+Theme with bar bottom component. Based on purple color
+
+[Mauricio Martínez](https://github.com/moudev)
+
+[![](https://cdn.jsdelivr.net/gh/Dawntraoz/slidev-theme-unicorn@master/screenshots/dark-theme-intro.png)![](https://cdn.jsdelivr.net/gh/Dawntraoz/slidev-theme-unicorn@master/screenshots/light-theme-cover.png)![](https://cdn.jsdelivr.net/gh/Dawntraoz/slidev-theme-unicorn@master/screenshots/dark-theme-image-centered.png)![](https://cdn.jsdelivr.net/gh/Dawntraoz/slidev-theme-unicorn@master/screenshots/dark-theme-center-without-header-footer.png)](https://github.com/dawntraoz/slidev-theme-unicorn)
+
+Unicorn
+
+Based on Dawntraoz website design
+
+[Alba Silvente (dawntraoz)](https://github.com/dawntraoz)
+
+[![](https://cdn.jsdelivr.net/gh/thatoranzhevyy/slidev-theme-zhozhoba@master/slides-export/01.png)![](https://cdn.jsdelivr.net/gh/thatoranzhevyy/slidev-theme-zhozhoba@master/.github/dark.png)![](https://cdn.jsdelivr.net/gh/thatoranzhevyy/slidev-theme-zhozhoba@master/slides-export/02.png)![](https://cdn.jsdelivr.net/gh/thatoranzhevyy/slidev-theme-zhozhoba@master/slides-export/03.png)![](https://cdn.jsdelivr.net/gh/thatoranzhevyy/slidev-theme-zhozhoba@master/slides-export/04.png)](https://github.com/thatoranzhevyy/slidev-theme-zhozhoba)
+
+Zhozhoba
+
+A zhozhoba theme for Slidev
+
+[Bogenbai Bayzharassov](https://github.com/thatoranzhevyy)
+
+[![](https://cdn.jsdelivr.net/gh/alvarosaburido/slidev-theme-penguin@master/screenshots/dark/01.png)![](https://cdn.jsdelivr.net/gh/alvarosaburido/slidev-theme-penguin@master/screenshots/light/02.png)![](https://cdn.jsdelivr.net/gh/alvarosaburido/slidev-theme-penguin@master/screenshots/light/06.png)![](https://cdn.jsdelivr.net/gh/alvarosaburido/slidev-theme-penguin@master/screenshots/light/05.png)](https://github.com/alvarosaburido/slidev-theme-penguin)
+
+Penguin
+
+A Penguin theme for Slidev
+
+[Alvaro Saburido (alvarosaburido)](https://github.com/alvarosaburido)
+
+[![](https://cdn.jsdelivr.net/gh/LinusBorg/slidev-theme-vuetiful@main/screenshots/cover-alt.png)![](https://cdn.jsdelivr.net/gh/LinusBorg/slidev-theme-vuetiful@main/screenshots/section.png)![](https://cdn.jsdelivr.net/gh/LinusBorg/slidev-theme-vuetiful@main/screenshots/big-points.png)![](https://cdn.jsdelivr.net/gh/LinusBorg/slidev-theme-vuetiful@main/screenshots/quote.png)](https://github.com/LinusBorg/slidev-theme-vuetiful)
+
+Vuetiful
+
+A Vue-inspired theme for Slidev
+
+[Thorsten Lünborg](https://github.com/LinusBorg)
+
+[![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/01.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/02.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/03.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/04.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/05.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/06.png)![](https://cdn.jsdelivr.net/gh/kecrily/slidev-theme-takahashi@master/screenshots/07.png)](https://github.com/kecrily/slidev-theme-takahashi)
+
+Takahashi
+
+A simple theme for Slidev
+
+[Percy M.](https://github.com/kecrily)
+
+[![](https://ja.sli.dev/theme-placeholder.png)](https://github.com/slidevjs/docs/edit/main/.vitepress/themes.ts)
+
+Yours?
+
+Submit your theme to be list here!
+
+## [\#](https://ja.sli.dev/themes/gallery.html\#%E3%81%9D%E3%81%AE%E4%BB%96%E3%81%AE%E3%83%86%E3%83%BC%E3%83%9E) その他のテーマ
+
+[NPMで利用可能なテーマ](https://www.npmjs.com/search?q=keywords%3Aslidev-theme) をすべて検索できます。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Cover Images
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/resources/covers.html\#%E3%82%AD%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%AB%E3%83%90%E3%83%BC) キュレーションカバー
+
+スターターテンプレートのデモとして、いくつかのカバー画像をキュレーションしました。
+
+![](https://ja.sli.dev/screenshots/covers.png)
+
+```
+---
+# キュレーションコレクションからランダムに画像が表示されます
+background: https://source.unsplash.com/collection/94734566/1920x1080
+---
+
+```
+
+もし気に入ったものがあれば、 [Unsplash collection](https://unsplash.com/collections/94734566/slidev) をチェックして作者を探してみてください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Components
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/builtin/components.html\#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) コンポーネント
+
+## [\#](https://ja.sli.dev/builtin/components.html\#%E3%83%93%E3%83%AB%E3%83%88%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) ビルトインコンポーネント
+
+> このセクションのドキュメントはまだ作成中です。完成するまでは [ソースコード](https://github.com/slidevjs/slidev/blob/main/packages/client/builtin) を直接参照してください。
+
+### [\#](https://ja.sli.dev/builtin/components.html\#toc) `TOC`
+
+目次を挿入します。
+
+タイトルとタイトルレベルは、各スライドの最初のタイトル要素から自動的に取得されます。
+
+フロントマターの構文を使用することで、スライドに対するこの自動取得の動作をオーバーライドすることができます：
+
+```
+---
+title: Amazing slide title
+level: 2
+---
+
+```
+
+またスライドが目次に全く表示されないようにしたい場合には、次のようにします：
+
+```
+---
+hideInToc: true
+---
+
+```
+
+#### [\#](https://ja.sli.dev/builtin/components.html\#%E4%BD%BF%E3%81%84%E6%96%B9) 使い方
+
+```
+<Toc />
+
+```
+
+パラメータ：
+
+- `columns` ( `string | number`, デフォルト： `1`): 表示する列数
+- `maxDepth` ( `string | number`, デフォルト： `Infinity`): 表示する目次の階層の最大値
+- `minDepth` ( `string | number`, デフォルト： `1`): 表示する目次の階層の最小値
+- `mode` ( `'all' | 'onlyCurrentTree'| 'onlySiblings'`, デフォルト： `'all'`):
+  - `'all'`: すべての項目を表示する
+  - `'onlyCurrentTree'`: 現在のページが含まれるツリーのアイテムのみを表示する（アクティブな要素、アクティブな要素の親と子）
+  - `'onlySiblings'`: 現在のページが含まれるツリーと直接の兄弟関係にある要素のみを表示する
+
+## [\#](https://ja.sli.dev/builtin/components.html\#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) カスタムコンポーネント
+
+プロジェクトルートに `components/` ディレクトリを作成し、カスタムVueコンポーネントを配置するだけで、Markdownファイル内で同じ名前を使用してコンポーネントを使用することができます！
+
+詳細は [コンポーネント](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) を参照してください。
+
+## [\#](https://ja.sli.dev/builtin/components.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%8C%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) テーマが提供するコンポーネント
+
+テーマはコンポーネントを提供することもできます。提供されているものについては、それぞれのテーマのドキュメントを参照してください。
+
+詳細は [ディレクトリ構造](https://ja.sli.dev/custom/directory-structure) のセクションを参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Drawing and Annotation
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/drawing.html\#%E6%8F%8F%E7%94%BB%E3%81%A8%E6%B3%A8%E9%87%88) 描画と注釈
+
+> v0.23から使用可能です
+
+描画や注釈を行うための [drauu](https://github.com/antfu/drauu) を内蔵しており、プレゼンテーションをさらに充実させることができます。
+
+ツールバーのアイコンをクリックして、描画を開始します。 [プレゼンターモード](https://ja.sli.dev/guide/presenter-mode) でも使用可能です。作成した描画や注釈は、全インスタンスでリアルタイムに **同期** されます。
+
+## [\#](https://ja.sli.dev/guide/drawing.html\#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%A9%E3%82%A4%E3%82%B9%E3%83%9A%E3%83%B3%E3%81%A8%E3%81%A8%E3%82%82%E3%81%AB%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B) スタイライスペンとともに使用する
+
+タブレットでスタイラスペンを使用する場合（例えば、iPadとApple Pencil）、Slidevは入力をスマートに検出することができます。描画モードをオンにすることなく、指やマウスでナビゲーションをコントロールしながら、ペンで直接スライドに描画することができます。
+
+## [\#](https://ja.sli.dev/guide/drawing.html\#%E6%8F%8F%E7%94%BB%E3%82%92%E4%BF%9D%E5%AD%98%E3%81%99%E3%82%8B) 描画を保存する
+
+以下のフロントマターの設定により、描画した内容はSVGとして `.slidev/drawings` ディレクトリ配下に保存され、エクスポートしたPDFやホスティングしたサイト内に表示させることができます。
+
+```
+---
+drawings:
+  persist: true
+---
+
+```
+
+## [\#](https://ja.sli.dev/guide/drawing.html\#%E6%8F%8F%E7%94%BB%E3%82%92%E9%9D%9E%E8%A1%A8%E7%A4%BA%E3%81%AB%E3%81%99%E3%82%8B) 描画を非表示にする
+
+全体に対して：
+
+```
+---
+drawings:
+  enabled: false
+---
+
+```
+
+開発環境でのみ：
+
+```
+---
+drawings:
+  enabled: dev
+---
+
+```
+
+プレゼンテーションモードでのみ：
+
+```
+---
+drawings:
+  presenterOnly: true
+---
+
+```
+
+## [\#](https://ja.sli.dev/guide/drawing.html\#%E6%8F%8F%E7%94%BB%E3%82%92%E5%90%8C%E6%9C%9F%E3%81%95%E3%81%9B%E3%82%8B) 描画を同期させる
+
+デフォルトでは、Slidevはすべてのインスタンスで描画を同期します。もし他の誰かとスライドを共有している場合は、同期を無効にした方がいいかもしれません：
+
+```
+---
+drawings:
+  syncAll: false
+---
+
+```
+
+この設定により、プレゼンターのインスタンスからの描画のみ、他のインスタンスと同期することができるようになります。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Navigation Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/navigation.html\#%E3%83%8A%E3%83%93%E3%82%B2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3) ナビゲーション
+
+## [\#](https://ja.sli.dev/guide/navigation.html\#%E3%83%8A%E3%83%93%E3%82%B2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%90%E3%83%BC) ナビゲーションバー
+
+Slidevのページの左下にマウスを移動すると、ナビゲーションバーが表示されます。
+
+![](https://ja.sli.dev/screenshots/navbar.png)
+
+| ショートカット | ボタン | 説明 |
+| --- | --- | --- |
+| `f` |  | フルスクリーンに切り替え |
+| `right` / `space` |  | 次のアニメーションもしくはスライドへ |
+| `left` |  | 前のアニメーションもしくはスライドへ |
+| `up` | - | 前のスライドへ |
+| `down` | - | 次のスライドへ |
+| `o` |  | [スライドオーバービュー](https://ja.sli.dev/guide/navigation.html#%E3%82%B9%E3%83%A9%E3%82%A4%E3%83%89%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%83%93%E3%83%A5%E3%83%BC) に切り替え |
+| `d` |  | ダークモードに切り替え |
+| - |  | [カメラビュー](https://ja.sli.dev/guide/recording.html#%E3%82%AB%E3%83%A1%E3%83%A9%E3%83%93%E3%83%A5%E3%83%BC) に切り替え |
+| - |  | [レコーディング](https://ja.sli.dev/guide/recording.html#%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0-1) |
+| - |  | [プレゼンターモード](https://ja.sli.dev/guide/presenter-mode) |
+| - |  | [統合エディタ](https://ja.sli.dev/guide/editors.html#%E7%B5%B1%E5%90%88%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF) に切り替え |
+| - |  | スライドをダウンロード ( [SPAビルド](https://ja.sli.dev/guide/exporting.html#%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3-spa) でだけ表示されます) |
+| - |  | スライドの情報を表示 |
+| - |  | 設定メニューを表示 |
+| `g` | - | goto...を表示 |
+
+## [\#](https://ja.sli.dev/guide/navigation.html\#%E3%82%B9%E3%83%A9%E3%82%A4%E3%83%89%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%83%93%E3%83%A5%E3%83%BC) スライドオーバービュー
+
+`o` を押すか、ナビゲーションバーのボタンをクリックすることで、スライドを俯瞰することができ、スライド間を簡単にジャンプできます。
+
+![](https://ja.sli.dev/screenshots/slides-overview.png)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Exporting Slides Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/exporting.html\#%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88) エクスポート
+
+## [\#](https://ja.sli.dev/guide/exporting.html\#pdf) PDF
+
+> PDFもしくはPNGへのエクスポートはレンダリングのために [Playwright](https://playwright.dev/) に依存しています。したがって、この機能を使用するためには [`playwright-chromium`](https://playwright.dev/docs/installation#download-single-browser-binary) をインストールする必要があります。 CI環境でエクスポートを行う場合は、 [the playwright CI guide](https://playwright.dev/docs/ci) が参考になります。
+
+`playwright-chromium` のインストール
+
+```
+$ npm i -D playwright-chromium
+
+```
+
+次のコマンドを使用してスライドをPDFにエクスポートします。
+
+```
+$ slidev export
+
+```
+
+しばらくすると、スライドが `./slides-exports.pdf` に出力されます。
+
+### [\#](https://ja.sli.dev/guide/exporting.html\#%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%82%B9%E3%83%86%E3%83%83%E3%83%97%E3%82%92%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B) クリックステップをエクスポートする
+
+> v0.21から使用可能です
+
+デフォルトでは、Slidevはクリックアニメーションを無効にして、スライド単位で1ページをエクスポートします。複数のステップがあるスライドを複数のページにエクスポートしたい場合は、 `--with-clicks` オプションを指定します。
+
+```
+$ slidev export --with-clicks
+
+```
+
+## [\#](https://ja.sli.dev/guide/exporting.html\#pngs) PNGs
+
+`--format png` オプションを指定した場合、Slidevは各スライドをPDFの代わりにPNG画像として出力します。
+
+```
+$ slidev export --format png
+
+```
+
+## [\#](https://ja.sli.dev/guide/exporting.html\#%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3-spa) シングルページアプリケーション (SPA)
+
+[静的ホスティング](https://ja.sli.dev/guide/hosting) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev FAQ Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/faq.html\#faq) FAQ
+
+## [\#](https://ja.sli.dev/guide/faq.html\#%E3%82%B0%E3%83%AA%E3%83%83%E3%83%89) グリッド
+
+SlidevはWebをベースにしているので、グリッドレイアウトを自由に適用することができます。 [CSS Grids](https://css-tricks.com/snippets/css/complete-guide-grid/)、 [flexboxes](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)、あるいは [Masonry](https://css-tricks.com/native-css-masonry-layout-in-css-grid/) で制御することができます。
+
+また [Windi CSS](https://windicss.org/) が内蔵されているので、参考までにそれを使った簡単な方法を紹介します：
+
+```
+<div class="grid grid-cols-2 gap-4">
+<div>
+
+最初のカラム
+
+</div>
+<div>
+
+2番目のカラム
+
+</div>
+</div>
+
+```
+
+さらに、各カラムのサイズをカスタマイズすることも可能です。:
+
+```
+<div class="grid grid-cols-[200px,1fr,10%] gap-4">
+<div>
+
+最初のカラム (200px)
+
+</div>
+<div>
+
+2番目のカラム (自動調整)
+
+</div>
+<div>
+
+3番目のカラム (親のコンテナに対して10%)
+
+</div>
+</div>
+
+```
+
+詳細は [Windi CSS Grids](https://windicss.org/utilities/grid.html) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/faq.html\#%E3%83%9D%E3%82%B8%E3%82%B7%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0) ポジショニング
+
+スライドは固定サイズ（デフォルトは `980x552px`）で定義され、ユーザーのスクリーンに合わせて拡大・縮小されます。画面に合わせて拡大・縮小されるため、absolute positionを使用しても安全です。
+
+例：
+
+```
+<div class="absolute left-30px bottom-30px">
+これは左下寄せのフッターです
+</div>
+
+```
+
+キャンバスの実際の大きさを変更するには、最初のフロントマターで `canvasWidth` オプションを指定します。
+
+```
+---
+canvasWidth: 800
+---
+
+```
+
+## [\#](https://ja.sli.dev/guide/faq.html\#%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%82%BA) フォントサイズ
+
+スライドのフォントサイズが小さすぎると感じる場合、いくつかの方法で調整することができます：
+
+### [\#](https://ja.sli.dev/guide/faq.html\#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%92%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%89%E3%81%99%E3%82%8B) ローカルスタイルをオーバーライドする
+
+インライン `<style>` タグで、各スライドごとのスタイルをオーバーライドすることができます。
+
+```
+# Page 1
+
+<style>
+h1 {
+  font-size: 10em;
+}
+</style>
+
+---
+
+# Page 2
+
+ここには適用されません
+
+```
+
+詳細： [埋め込みスタイル](https://ja.sli.dev/guide/syntax.html#%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB)
+
+### [\#](https://ja.sli.dev/guide/faq.html\#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%92%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%89%E3%81%99%E3%82%8B) グローバルスタイルをオーバーライドする
+
+カスタムグローバルスタイルを定義するには、次のように `./style.css` を作成します。
+
+```
+/* style.css */
+
+h1 {
+  font-size: 10em !important;
+}
+
+```
+
+詳細： [グローバルスタイル](https://ja.sli.dev/custom/directory-structure.html#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB)
+
+### [\#](https://ja.sli.dev/guide/faq.html\#%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%90%E3%82%B9%E3%81%AE%E6%8B%A1%E5%A4%A7%E3%83%BB%E7%B8%AE%E5%B0%8F) キャンバスの拡大・縮小
+
+キャンバスの実寸を変更すると、すべてのコンテンツ（テキスト、画像、コンポーネントなど）とスライドが拡大・縮小されます。
+
+```
+---
+# default: 980
+# キャンバスが小さくなれば、視覚的なサイズは大きくなります。
+canvasWidth: 800
+---
+
+```
+
+### [\#](https://ja.sli.dev/guide/faq.html\#transform%E3%81%AE%E4%BD%BF%E7%94%A8) Transformの使用
+
+CSSのtransformプロパティの薄いラッパーである、ビルトインコンポーネント `<Transform />` を提供しています。
+
+```
+<Transform :scale="1.4">
+
+- Item 1
+- Item 2
+
+</Transform>
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Syntax Highlighting Options
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/highlighters.html\#%E3%82%B7%E3%83%B3%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B9%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88) シンタックスハイライト
+
+Slidevには2種類のシンタックスハイライトが付属しており、好みに合わせて選択できます：
+
+- [Prism](https://prismjs.com/)
+- [Shiki](https://github.com/shikijs/shiki)
+
+**Prism** は最も人気のあるシンタックスハイライトの1つです。ハイライトはトークンクラスにコードを追加することで行われ、CSSによって色付けされます。 [公式テーマ](https://github.com/PrismJS/prism-themes) を確認したり、 [`prism-theme-vars`](https://github.com/antfu/prism-theme-vars) を使用して簡単にテーマを作成/カスタマイズすることができます。
+
+一方で **Shiki** はTextMateの文法に対応したシンタックスハイライトです。色付きのトークンを生成するため、追加のCSSは必要ありません。充実した文法サポートにより、生成された色はVS Codeで見るのと同じように非常に正確です。またShikiには [多くのビルトインテーマ](https://github.com/shikijs/shiki/blob/master/docs/themes.md) が付属しています。Shikiの欠点は、ハイライトを行うためにTextMateのテーマ（VS Codeのテーマと互換性あり）も必要で、カスタマイズが少し難しくなることです。
+
+Slidevのテーマは通常PrismとShikiの双方をサポートしていますが、使用するテーマによっては、どちらか一方しかサポートしていない場合があります。
+
+選択肢がある場合、基本的にトレードオフです：
+
+- **Prism** はカスタマイズが容易です。
+- **Shiki** はより正確にハイライトできます。
+
+デフォルトでは、SlidevはPrismを使用します。フロントマターを修正することで、この設定を変更できます：
+
+```
+---
+highlighter: shiki
+---
+
+```
+
+## [\#](https://ja.sli.dev/custom/highlighters.html\#prism%E3%81%AE%E8%A8%AD%E5%AE%9A) Prismの設定
+
+Prismを設定する場合には、テーマのCSSをインポートするか、 [`prism-theme-vars`](https://github.com/antfu/prism-theme-vars) を使用してテーマを設定することで、ライトモードとダークモードの両方のテーマを設定することができます。詳しくはドキュメントを参照してください。
+
+## [\#](https://ja.sli.dev/custom/highlighters.html\#shiki%E3%81%AE%E8%A8%AD%E5%AE%9A) Shikiの設定
+
+環境: node
+
+このセットアップ関数はNode.js上でのみ動作し、NodeのAPIにアクセスすることができます。
+
+以下の内容で `./setup/shiki.ts` ファイルを作成します。
+
+```
+/* ./setup/shiki.ts */
+import { defineShikiSetup } from '@slidev/types'
+
+export default defineShikiSetup(() => {
+  return {
+    theme: {
+      dark: 'min-dark',
+      light: 'min-light',
+    },
+  }
+})
+
+```
+
+利用可能なテーマの名前については、 [Shikiのドキュメント](https://github.com/shikijs/shiki/blob/master/docs/themes.md#all-themes) を参照してください。
+
+自身のテーマを使用したい場合は次のようにします：
+
+```
+/* ./setup/shiki.ts */
+
+import { defineShikiSetup } from '@slidev/types'
+
+export default defineShikiSetup(async({ loadTheme }) => {
+  return {
+    theme: {
+      dark: await loadTheme('path/to/theme.json'),
+      light: await loadTheme('path/to/theme.json'),
+    },
+  }
+})
+
+```
+
+## Slidev Editor Support
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/editors.html\#%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88) エディタサポート
+
+Slidevはソースの入力にMarkdownを使用しているので、あなたが好きなエディタで書くことができます。
+
+スライドを高度に管理したい場合、以下のエディタインテグレーションを使用することができます。
+
+## [\#](https://ja.sli.dev/guide/editors.html\#%E7%B5%B1%E5%90%88%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF) 統合エディタ
+
+Slidevには [CodeMirror](https://codemirror.net/) というエディタが統合されており、ファイルの変更を即座に再読み込みして保存してくれます。
+
+起動するためにはボタンを押してください。
+
+![](https://ja.sli.dev/screenshots/integrated-editor.png)
+
+## [\#](https://ja.sli.dev/guide/editors.html\#vs-code%E6%8B%A1%E5%BC%B5%E6%A9%9F%E8%83%BD) VS Code拡張機能
+
+[![Slidev](https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/logo-for-vscode.png)](https://github.com/slidevjs/slidev)
+
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/antfu.slidev.svg?color=4EC5D4&label=VS%20Code%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=antfu.slidev)[![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/antfu.slidev.svg?color=2B90B6)](https://marketplace.visualstudio.com/items?itemName=antfu.slidev)
+
+VS Code拡張機能はスライドをよりよく整理し、その概要を素早く把握するための機能を提供します。
+
+### [\#](https://ja.sli.dev/guide/editors.html\#%E6%A9%9F%E8%83%BD) 機能
+
+- スライドをサイドパネルで確認
+- 次へ / 戻るボタン
+- スライドの順序入れ替え
+- スライドブロックのための折り畳み機能
+- MarkdownをHTMLに変換
+
+![](https://user-images.githubusercontent.com/11247099/116809994-cc2caa00-ab73-11eb-879f-60585747c3c9.png)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Directory Structure
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/directory-structure.html\#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E9%80%A0) ディレクトリ構造
+
+Slidevは設定面を最小化し、機能拡張を柔軟かつ直感的に行うために、いくつかのディレクトリ構造の規約を採用しています。
+
+基本的な構造は以下の通りです：
+
+```
+your-slidev/
+  ├── components/       # カスタムコンポーネント
+  ├── layouts/          # カスタムレイアウト
+  ├── public/           # 静的アセット
+  ├── setup/            # カスタムセットアップ/フック
+  ├── styles/           # カスタムスタイル
+  ├── index.html        # index.htmlへのインジェクション
+  ├── slides.md         # メインスライド
+  └── vite.config.ts   # 拡張されたviteの設定
+
+```
+
+すべてオプションです。
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88) コンポーネント
+
+規約： `./components/*.{vue,js,ts,jsx,tsx,md}`
+
+このディレクトリ内のコンポーネントは、ファイル名と同じコンポーネント名で、スライドのMarkdownで直接使用することができます。
+
+例：
+
+```
+your-slidev/
+  ├── ...
+  └── components/
+      ├── MyComponent.vue
+      └── HelloWorld.ts
+
+```
+
+```
+<!-- slides.md -->
+
+# My Slide
+
+<MyComponent :count="4"/>
+
+<!-- どちらの名前も使えます -->
+
+<hello-world foo="bar">
+  Slot
+</hello-world>
+
+```
+
+この機能は [`vite-plugin-components`](https://github.com/antfu/vite-plugin-components) によって提供されています。詳細はこちらを参照してください。
+
+またSlidevはいくつかの [ビルトインコンポーネント](https://ja.sli.dev/builtin/components) を提供していますので、それを利用することもできます。
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88) レイアウト
+
+規約： `./layouts/*.{vue,js,ts,jsx,tsx}`
+
+```
+your-slidev/
+  ├── ...
+  └── layouts/
+      ├── cover.vue
+      └── my-cool-theme.vue
+
+```
+
+レイアウトには任意のファイル名を使用することができます。そしてファイル名を使用して、YAMLヘッダでレイアウトを参照します。
+
+```
+---
+layout: my-cool-theme
+---
+
+```
+
+作成したレイアウトがビルトインのレイアウトやテーマと同じ名前の場合、カスタムレイアウトがビルトイン/テーマレイアウトより優先されます。優先順位は `ローカル > テーマ > ビルトイン` の順です。
+
+レイアウトコンポーネントでは、スライドのコンテンツに対して `<slot />` を使用します。例：
+
+```
+<!-- default.vue -->
+<template>
+  <div class="slidev-layout default">
+    <slot />
+  </div>
+</template>
+
+```
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#%E9%9D%99%E7%9A%84%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88) 静的アセット
+
+規約： `./public/*`
+
+このディレクトリに配置されているアセットは、開発中はルートパス `/` で提供され、そのままdistディレクトリのルートにコピーされます。詳細は [Vite's `public` directory](https://vitejs.dev/guide/assets.html#the-public-directory) を参照してください。
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB) スタイル
+
+規約： `./style.css` \| `./styles/index.{css,js,ts}`
+
+この規約に従って配置されたファイルは、Appのルートに挿入されます。複数のCSSをインポートする必要がある場合は、以下のような構造を作成し、インポートの順序を自分で管理することができます。
+
+```
+your-slidev/
+  ├── ...
+  └── styles/
+      ├── index.ts
+      ├── base.css
+      ├── code.css
+      └── layouts.css
+
+```
+
+```
+// styles/index.ts
+
+import './base.css'
+import './code.css'
+import './layouts.css'
+
+```
+
+スタイルは [Windi CSS](http://windicss.org/) と [PostCSS](https://postcss.org/) で処理されるため、CSSのネストや [at-directives](https://windicss.org/features/directives.html) をそのまま使用することができます。例：
+
+```
+.slidev-layout {
+  @apply px-14 py-10 text-[1.1rem];
+
+  h1, h2, h3, h4, p, div {
+    @apply select-none;
+  }
+
+  pre, code {
+    @apply select-text;
+  }
+
+  a {
+    color: theme('colors.primary');
+  }
+}
+
+```
+
+[シンタックスについて詳しく学ぶ](https://windicss.org/features/directives.html)
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#index-html) `index.html`
+
+規約： `index.html`
+
+`index.html` はメインの `index.html` にmeteタグやscriptを挿入する機能を提供します。
+
+例えば、次のようなカスタム `index.html` の場合：
+
+```
+<!-- ./index.html -->
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Nunito+Sans:wght@200;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <script src="./your-scripts"></script>
+</body>
+
+```
+
+最終的にホストされる `index.html` は次のようになります。
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png">
+  <!-- 挿入されたhead -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Nunito+Sans:wght@200;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="__ENTRY__"></script>
+  <!-- 挿入されたbody -->
+  <script src="./your-scripts"></script>
+</body>
+</html>
+
+```
+
+## [\#](https://ja.sli.dev/custom/directory-structure.html\#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC) グローバルレイヤー
+
+規約： `global-top.vue` \| `global-bottom.vue`
+
+詳細： [グローバルレイヤー](https://ja.sli.dev/custom/global-layers)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Mermaid Configuration
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-mermaid.html\#mermaid%E3%81%AE%E8%A8%AD%E5%AE%9A) Mermaidの設定
+
+環境: client
+
+このセットアップ関数はクライアント側でのみ動作します。パッケージのインポート時にはブラウザの互換性を確認してください。
+
+以下の内容で `./setup/mermaid.ts` を作成します：
+
+```
+import { defineMermaidSetup } from '@slidev/types'
+
+export default defineMermaidSetup(() => {
+  return {
+    theme: 'forest',
+  }
+})
+
+```
+
+セットアップにより、 [Mermaid](https://mermaid-js.github.io/) のカスタムデフォルト設定を使用することができます。詳細については、型の定義とドキュメントを参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Presenter Mode
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/presenter-mode.html\#%E3%83%97%E3%83%AC%E3%82%BC%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%A2%E3%83%BC%E3%83%89) プレゼンターモード
+
+ナビゲーションパネルのボタンをクリックするか、 [http://localhost:3030/presenter](http://localhost:3030/presenter) に手動でアクセスすることで、プレゼンターモードに入ります。プレゼンターモードに入ると、他のページインスタンスも自動的にプレゼンターと同期するようになります。
+
+![](https://ja.sli.dev/screenshots/presenter-mode.png)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Global Layers in Slidev
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/global-layers.html\#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC) グローバルレイヤー
+
+> v0.17から使用可能です
+
+グローバルレイヤーを使用すると、スライド間で **永続的な** カスタムコンポーネントを持つことができます。これはフッター、スライドをまたぐアニメーション、グローバルエフェクトなどに便利です。
+
+Slidevはこのために2つのレイヤーを提供しています。プロジェクトのルートに `global-top.vue` や `global-bottom.vue` を作成すると、自動的にピックアップされます。
+
+レイヤーの関係性：
+
+- グローバルトップ ( `global-top.vue`)
+- スライド
+- グローバルボトム ( `global-bottom.vue`)
+
+## [\#](https://ja.sli.dev/custom/global-layers.html\#%E4%BE%8B) 例
+
+```
+<!-- global-top.vue -->
+<template>
+  <footer class="absolute bottom-0 left-0 right-0 p-2">Your Name</footer>
+</template>
+
+```
+
+`Your Name` という文字はすべてのスライドに表示されます。
+
+条件付きで有効にするには、 [Vueグローバルコンテキスト](https://ja.sli.dev/custom/vue-context) を使用して適用します。
+
+```
+<!-- Page 4からフッターを隠します-->
+<template>
+  <footer
+    v-if="$slidev.nav.currentPage !== 4"
+    class="absolute bottom-0 left-0 right-0 p-2"
+  >
+    Your Name
+  </footer>
+</template>
+
+```
+
+```
+<!-- "cover"レイアウトからフッターを隠します -->
+<template>
+  <footer
+    v-if="$slidev.nav.currentLayout !== 'cover'"
+    class="absolute bottom-0 left-0 right-0 p-2"
+  >
+    Your Name
+  </footer>
+</template>
+
+```
+
+```
+<!-- ページ用フッターの一例 -->
+<template>
+  <footer
+    v-if="$slidev.nav.currentLayout !== 'cover'"
+    class="absolute bottom-0 left-0 right-0 p-2"
+  >
+    {{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}
+  </footer>
+</template>
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Hosting Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/guide/hosting.html\#%E9%9D%99%E7%9A%84%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 静的ホスティング
+
+## [\#](https://ja.sli.dev/guide/hosting.html\#%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3-spa-%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B) シングルページアプリケーション(SPA)を構築する
+
+スライドをセルフホスティング可能なSPAとして構築することができます：
+
+```
+$ slidev build
+
+```
+
+生成されたアプリケーションは `dist/` の配下に配置され、 [GitHub Pages](https://pages.github.com/)、 [Netlify](https://netlify.app/)、 [Vercel](https://vercel.com/) など、好きな場所にホストすることができます。これでリンク1つで世界中の人とスライドを共有することできます。
+
+### [\#](https://ja.sli.dev/guide/hosting.html\#%E3%83%99%E3%83%BC%E3%82%B9%E3%83%91%E3%82%B9) ベースパス
+
+サブルート下にスライドをデプロイするには、 `--base` オプションを指定する必要があります。例：
+
+```
+$ slidev build --base /talks/my-cool-talk/
+
+```
+
+詳細は [Viteのドキュメント](https://vitejs.dev/guide/build.html#public-base-path) を参照してください。
+
+### [\#](https://ja.sli.dev/guide/hosting.html\#%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E5%8F%AF%E8%83%BD%E3%81%AApdf%E3%82%92%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B) ダウンロード可能なPDFを提供する
+
+以下の設定により、SPAの閲覧者向けにダウンロード可能なPDFを提供することができます：
+
+```
+---
+download: true
+---
+
+```
+
+Slidevはビルドと一緒にPDFファイルを生成し、SPAにダウンロードボタンが表示されます。
+
+またPDFに対してカスタムURLを指定することもできます。その場合、レンダリング処理はスキップされます。
+
+```
+---
+download: 'https://myside.com/my-talk.pdf'
+---
+
+```
+
+## [\#](https://ja.sli.dev/guide/hosting.html\#%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB) サンプル
+
+以下はSPAとしてエクスポートされた例です：
+
+- [Starter Template](https://sli.dev/demo/starter)
+- [Composable Vue](https://talks.antfu.me/2021/composable-vue) by [Anthony Fu](https://github.com/antfu)
+
+詳しくは [ショーケース](https://ja.sli.dev/showcases) を参照してください。
+
+## [\#](https://ja.sli.dev/guide/hosting.html\#%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) ホスティング
+
+`npm init slidev@lastest` を使って、サービスをそのままホスティングするために必要な設定ファイルが含まれたプロジェクトの雛形を生成することを推奨します。
+
+### [\#](https://ja.sli.dev/guide/hosting.html\#netlify) Netlify
+
+- [Netlify](https://netlify.com/)
+
+プロジェクトルートに以下の内容で `netlify.toml` を作成します。
+
+```
+[build.environment]
+  NODE_VERSION = "14"
+
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+```
+
+Netlifyのダッシュボードを開き、リポジトリを指定して新しいサイトを作成してください。
+
+### [\#](https://ja.sli.dev/guide/hosting.html\#vercel) Vercel
+
+- [Vercel](https://vercel.com/)
+
+プロジェクトルートに以下の内容で `vercel.json` を作成します。
+
+```
+{
+  "rewrites": [\
+    { "source": "/(.*)", "destination": "/index.html" }\
+  ]
+}
+
+```
+
+Vercelのダッシュボードを開き、リポジトリを指定して新しいサイトを作成してください。
+
+## [\#](https://ja.sli.dev/guide/hosting.html\#github-pages) GitHub Pages
+
+- [GitHub Pages](https://pages.github.com/)
+
+GitHub Actionsを使用してGitHub Pagesにスライドをデプロイするために、以下の内容で `.github/workflows/deploy.yml` を作成してください。
+
+```
+name: Deploy pages
+on: push
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Deploy pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Windi CSS Setup
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-windicss.html\#windi-css%E3%81%AE%E8%A8%AD%E5%AE%9A) Windi CSSの設定
+
+環境: node
+
+このセットアップ関数はNode.js上でのみ動作し、NodeのAPIにアクセスすることができます。
+
+Markdownは当然ですが、埋め込まれたHTMLマークアップをサポートしています。したがって、好きなようにコンテンツをスタイルすることができます。いくつかの利便性を提供するために、 [Windi CSS](https://github.com/windicss/windicss) を内蔵し、クラスユーティリティを使用して、直接マークアップにスタイルを設定することができます。
+
+例：
+
+```
+<div class="grid pt-4 gap-4 grids-cols-[100px,1fr]">
+
+### Name
+
+- Item 1
+- Item 2
+
+</div>
+
+```
+
+[Windi CSS v3.0](https://windicss.org/posts/v30.html) の [Attributify Mode](https://windicss.org/posts/v30.html#attributify-mode) はデフォルトで有効になっています。
+
+## [\#](https://ja.sli.dev/custom/config-windicss.html\#%E8%A8%AD%E5%AE%9A) 設定
+
+Windi CSSを設定するために、以下の内容で `setup/windicss.ts` を作成し、ビルトインの設定を拡張します。
+
+```
+// setup/windicss.ts
+
+import { defineWindiSetup } from '@slidev/types'
+
+// ビルトインのWindi CSSの設定を拡張する
+export default defineWindiSetup(() => ({
+  shortcuts: {
+    // デフォルトの背景をカスタマイズします
+    'bg-main': 'bg-white text-[#181818] dark:bg-[#121212] dark:text-[#ddd]',
+  },
+  theme: {
+    extend: {
+      // フォントはここで置き換えることができますが、`index.html`のWebフォントのリンクの更新を忘れないようにしてください
+      fontFamily: {
+        sans: 'ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"',
+        mono: '"Fira Code", monospace',
+      },
+    },
+  },
+}))
+
+```
+
+詳細は [Windi CSS configurations](https://windicss.org/guide/configuration.html) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Vue Global Context
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/vue-context.html\#vue%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88) Vueグローバルコンテキスト
+
+Slidevは高度な条件やナビゲーションのコントロールのために、 [グローバルVueコンテキスト](https://v3.ja.vuejs.org/api/application-config.html#globalproperties) `$slidev` を注入しています。
+
+## [\#](https://ja.sli.dev/custom/vue-context.html\#%E4%BD%BF%E3%81%84%E6%96%B9) 使い方
+
+MarkdownやVueテンプレートのどこでも、 ["Mustache"タグ](https://v3.ja.vuejs.org/guide/template-syntax.html) を使ってアクセスできます。
+
+```
+<!-- slides.md -->
+
+# Page 1
+
+Current page is: {{ $slidev.nav.currentPage }}
+
+```
+
+```
+<!-- Foo.vue -->
+
+<template>
+  <div>Title: {{ $slidev.configs.title }}</div>
+  <button @click="$slidev.nav.next">Next Page</button>
+</template>
+
+```
+
+## [\#](https://ja.sli.dev/custom/vue-context.html\#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3) プロパティ
+
+### [\#](https://ja.sli.dev/custom/vue-context.html\#slidev-nav) `$slidev.nav`
+
+スライドナビゲーションのプロパティとコントロールを保持するリアクティブオブジェクトです。 例：
+
+```
+$slidev.nav.next() // go next step
+
+$slidev.nav.nextSlide() // go next slide (skip v-clicks)
+
+$slidev.nav.go(10) // go slide #10
+
+```
+
+```
+$slidev.nav.currentPage // current slide number
+
+$slidev.nav.currentLayout // current layout id
+
+$slidev.nav.clicks // current clicks count
+
+```
+
+利用できるプロパティの詳細については、 [nav.ts](https://github.com/slidevjs/slidev/blob/main/packages/client/logic/nav.ts) のエクスポートを参照してください。
+
+### [\#](https://ja.sli.dev/custom/vue-context.html\#slidev-configs) `$slidev.configs`
+
+`slides.md` の [フロントマターの設定](https://ja.sli.dev/custom/#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) をパースしたものを保持するリアクティブオブジェクトです。 例：
+
+```
+---
+title: My First Slidev!
+---
+
+```
+
+```
+{{ $slidev.configs.title }} // 'My First Slidev!'
+
+```
+
+### [\#](https://ja.sli.dev/custom/vue-context.html\#slidev-themeconfigs) `$slidev.themeConfigs`
+
+テーマの設定をパースしたものを保持するリアクティブオブジェクトです。
+
+```
+---
+title: My First Slidev!
+themeConfig:
+  primary: #213435
+---
+
+```
+
+```
+{{ $slidev.themeConfigs.primary }} // '#213435'
+
+```
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Vue Configuration Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-vue.html\#vue%E3%81%AE%E8%A8%AD%E5%AE%9A) Vueの設定
+
+環境: client
+
+このセットアップ関数はクライアント側でのみ動作します。パッケージのインポート時にはブラウザの互換性を確認してください。
+
+Slidevはクライアントサイドでアプリケーションをレンダリングするために [Vue 3](https://v3.ja.vuejs.org/) を使用しています。カスタムプラグインや設定を追加することで、アプリケーションを拡張することができます。
+
+以下の内容で `./setup/main.ts` を作成します：
+
+```
+import { defineAppSetup } from '@slidev/types'
+
+export default defineAppSetup(({ app, router }) => {
+  // Vue App
+  app.use(YourPlugin)
+})
+
+```
+
+これはSlidevアプリのメインエントランスとしても使用することができ、アプリ起動前にいくつかの初期化を行うことができます。
+
+詳細： [アプリケーションAPI](https://v3.ja.vuejs.org/api/application-api.html#component)
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Vite Configuration Guide
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-vite.html\#vite%E3%81%AE%E8%A8%AD%E5%AE%9A) Viteの設定
+
+環境: node
+
+このセットアップ関数はNode.js上でのみ動作し、NodeのAPIにアクセスすることができます。
+
+Slidevは [Vite](http://vitejs.dev/) を搭載しています。つまり、Viteの素晴らしいプラグインシステムを利用して、スライドをさらにカスタマイズすることができます。
+
+`vite.config.ts` があれば、それが採用されます。
+
+Slidevには以下のプラグインがあらかじめ設定されています：
+
+- [@vitejs/plugin-vue](https://github.com/vitejs/vite/tree/main/packages/plugin-vue)
+- [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components)
+- [unplugin-icons](https://github.com/antfu/unplugin-icons)
+- [vite-plugin-md](https://github.com/antfu/vite-plugin-md)
+- [vite-plugin-windicss](https://github.com/windicss/vite-plugin-windicss)
+- [vite-plugin-remote-assets](https://github.com/antfu/vite-plugin-remote-assets)
+
+詳細は [pre-configurations here](https://github.com/slidevjs/slidev/blob/main/packages/slidev/node/plugins/preset.ts) を参照してください。
+
+## [\#](https://ja.sli.dev/custom/config-vite.html\#%E5%86%85%E9%83%A8%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E8%A8%AD%E5%AE%9A) 内部プラグインの設定
+
+> v0.21から使用可能です
+
+上記のビルトインプラグインのリストを設定するために、以下の内容で `vite.config.ts` を作成します。Slidevはこれらのプラグインに対して、いくつかあらかじめ設定されたオプションを保持していることに注意してください。この使い方はそれらの設定を上書きし、アプリケーションが潜在的に壊れる原因になる可能性があります。これは **高度な機能** として扱い、何を行っているのかを確認してから次に進んでください。
+
+```
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  slidev: {
+    vue: {
+      /* vue options */
+    },
+    markdown: {
+      /* markdown-it options */
+      markdownItSetup(md) {
+        /* custom markdown-it plugins */
+        md.use(/* ... */)
+      },
+    },
+    /* options for other plugins */
+  },
+})
+
+```
+
+その他のオプションについては [type declarations](https://github.com/slidevjs/slidev/blob/main/packages/slidev/node/options.ts#L50) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Slidev Shortcuts Setup
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-shortcuts.html\#%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E3%81%AE%E8%A8%AD%E5%AE%9A) ショートカットの設定
+
+> v0.20から使用可能です
+
+環境: client
+
+このセットアップ関数はクライアント側でのみ動作します。パッケージのインポート時にはブラウザの互換性を確認してください。
+
+以下の内容で `./setup/shortcuts.ts` を作成します：
+
+```
+import { defineShortcutsSetup, NavOperations } from '@slidev/types'
+
+export default defineShortcutsSetup((nav: NavOperations) => {
+  return [\
+    {\
+      key: 'enter',\
+      fn: () => nav.next(),\
+      autoRepeat: true,\
+    },\
+    {\
+      key: 'backspace',\
+      fn: () => nav.prev(),\
+      autoRepeat: true,\
+    },\
+  ]
+})
+
+```
+
+セットアップによって、 [ナビゲーション](https://ja.sli.dev/guide/navigation#navigation-bar) で言及されているショートカットに対して、カスタム設定を使用することができます。上記の設定により、次のアニメーションやスライドへの移動は `enter` に、前のアニメーションやスライドへの移動は `backspace` に割り当てられます。
+
+設定用の関数は、いくつかのナビゲーションメソッドを持つオブジェクトを受け取り、いくつかのショートカット設定を含む配列を返します。詳細については型定義を参照してください。
+
+キーが押されたときのイベントについての詳細は、 [useMagicKeys \| VueUse](https://vueuse.org/core/useMagicKeys/) を参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## KaTeX Configuration
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-katex.html\#katex%E3%81%AE%E8%A8%AD%E5%AE%9A) KaTeXの設定
+
+環境: node
+
+このセットアップ関数はNode.js上でのみ動作し、NodeのAPIにアクセスすることができます。
+
+以下の内容で `./setup/katex.ts` を作成します：
+
+```
+import { defineKatexSetup } from '@slidev/types'
+
+export default defineKatexSetup(() => {
+  return {
+    /* ... */
+  }
+})
+
+```
+
+この設定により、 [KaTex Options](https://katex.org/docs/options.html) のカスタム設定を使用することができます。詳細については、型の定義とドキュメントを参照してください。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Monaco Editor Setup
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/custom/config-monaco.html\#monaco%E3%81%AE%E8%A8%AD%E5%AE%9A) Monacoの設定
+
+環境: client
+
+このセットアップ関数はクライアント側でのみ動作します。パッケージのインポート時にはブラウザの互換性を確認してください。
+
+以下の内容で `./setup/monaco.ts` を作成します。
+
+```
+import { defineMonacoSetup } from '@slidev/types'
+
+export default defineMonacoSetup(async (monaco) => {
+  // 設定するためには`monaco`を使用します
+})
+
+```
+
+詳細は [configuring Monaco](https://github.com/Microsoft/monaco-editor) を参照してください。
+
+## [\#](https://ja.sli.dev/custom/config-monaco.html\#%E4%BD%BF%E3%81%84%E6%96%B9) 使い方
+
+スライドでMonacoを使用するには、コードスニペットに `{monaco}` を追加するだけです：
+
+````
+//```js
+const count = ref(1)
+const plusOne = computed(() => count.value + 1)
+
+console.log(plusOne.value) // 2
+
+plusOne.value++ // error
+//```
+
+````
+
+これを以下のように変更します
+
+````
+//```js {monaco}
+const count = ref(1)
+const plusOne = computed(() => count.value + 1)
+
+console.log(plusOne.value) // 2
+
+plusOne.value++ // error
+//```
+
+````
+
+## [\#](https://ja.sli.dev/custom/config-monaco.html\#%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88) エクスポート
+
+デフォルトでは、Monacoは `開発者` モードのみで動作します。エクスポートされたSPAでMonacoを使用したい場合は、フロントマターで設定してください：
+
+```
+---
+monaco: true # デフォルト "dev"
+---
+
+```
+
+## [\#](https://ja.sli.dev/custom/config-monaco.html\#%E5%9E%8B%E3%81%AE%E8%87%AA%E5%8B%95%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB) 型の自動インストール
+
+MonacoでTypeScriptを使用する場合、依存関係のある型は自動的にクライアントサイドにインストールされます。
+
+````
+//```ts {monaco}
+import { ref } from 'vue'
+import { useMouse } from '@vueuse/core'
+
+const counter = ref(0)
+//```
+
+````
+
+上記の例では、 `vue` と `@vueuse/core` はdependencies / devDependenciesとしてローカルにインストールされています。あとはSlidevが自動的にエディタに対応した型を作成します。
+
+## [\#](https://ja.sli.dev/custom/config-monaco.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E8%A8%AD%E5%AE%9A) テーマの設定
+
+テーマはライトテーマ/ダークテーマをベースにSlidevで制御されています。テーマをカスタマイズしたい場合は、テーマのIDをsetup関数に指定します：
+
+```
+// ./setup/monaco.ts
+import { defineMonacoSetup } from '@slidev/types'
+
+export default defineMonacoSetup(() => {
+  return {
+    theme: {
+      dark: 'vs-dark',
+      light: 'vs',
+    },
+  }
+})
+
+```
+
+カスタムテーマを使用する場合には次のようにします：
+
+```
+import { defineMonacoSetup } from '@slidev/types'
+
+// change to your themes
+import dark from 'theme-vitesse/themes/vitesse-dark.json'
+import light from 'theme-vitesse/themes/vitesse-light.json'
+
+export default defineMonacoSetup((monaco) => {
+  monaco.editor.defineTheme('vitesse-light', light as any)
+  monaco.editor.defineTheme('vitesse-dark', dark as any)
+
+  return {
+    theme: {
+      light: 'vitesse-light',
+      dark: 'vitesse-dark',
+    },
+  }
+})
+
+```
+
+> Slidev用のテーマを作成する場合は、setup関数内で動的 `import()` を使用すると、より良いtree-shakingとcode-splittingの結果を得ることができます。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
+## Create Slidev Themes
+翻訳はもう維持されていません、 [英語のドキュメント](https://sli.dev/) をご覧ください.
+
+# [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%83%86%E3%83%BC%E3%83%9E%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B) テーマを作成する
+
+最初のテーマを作成するために、ジェネレータを作成することを推奨します。
+
+```
+$ npm init slidev-theme
+
+```
+
+作成されたテーマを修正し、試すことができます。例として [公式テーマ](https://ja.sli.dev/themes/gallery) を参照することもできます。
+
+## [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%93%E3%81%A8) できること
+
+テーマでは次のことができます：
+
+- グローバルスタイル
+- デフォルトの設定を指定する (フォント、 カラースキーマ、 ハイライト、など）
+- カスタムレイアウトを指定する、もしくは既存のレイアウトを上書きする
+- カスタムコンポーネントを指定する、もしくは既存のコンポーネントを上書きする
+- Windi CSSの設定を拡張する
+- MonacoやPrismのようなツールの設定をする
+
+## [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E8%A6%8F%E7%B4%84) 規約
+
+テーマはnpmレジストリに公開され、以下の規約に従います。
+
+- パッケージ名は `slidev-theme-` から始めます。例： `slidev-theme-awesome`
+- `package.json` の `keywords` フィールドに、 `slidev-theme` と `slidev` を追加します。
+
+## [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97) セットアップ
+
+テーマのテスト用プレイグラウンドをセットアップするには、以下のようなフロントマターで `example.md` を作成し、現在のディレクトリをテーマとして使用することをSlidevに伝えます。
+
+```
+---
+theme: ./
+---
+
+```
+
+オプションで、いくつかのスクリプトを `package.json` に追加することもできます。
+
+```
+// package.json
+{
+  "scripts": {
+    "dev": "slidev example.md",
+    "build": "slidev build example.md",
+    "export": "slidev export example.md",
+    "screenshot": "slidev export example.md --format png"
+  }
+}
+
+```
+
+テーマを公開するには `npm publish` を実行すればOKです。ビルドプロセスは必要ありません（つまり、 `.vue` と `.ts` ファイルを直接公開することができ、Slidevはスマートなのでそれらを読み込むことができます）。
+
+テーマのコントリビューションポイントはローカルカスタマイズと同じ規約に従います。 [命名規約についてはドキュメント](https://ja.sli.dev/custom/) を参照してください。
+
+## [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AE%E8%A8%AD%E5%AE%9A) デフォルトの設定
+
+> v0.19から使用可能です
+
+テーマでは `package.json` を介して、デフォルトの [設定](https://ja.sli.dev/custom/#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) を指定できます。
+
+```
+// package.json
+{
+  "slidev": {
+    "default": {
+      "aspectRatio": "16/9",
+      "canvasWidth": 980,
+      "fonts": {
+        "sans": "Robot",
+        "mono": "Fira Code"
+      }
+    }
+  }
+}
+
+```
+
+フォントは [Google Fonts](https://fonts.google.com/) から自動でインポートされます。
+
+詳細は [フォント](https://ja.sli.dev/custom/fonts) と [フロントマターの設定](https://ja.sli.dev/custom/#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%83%9E%E3%82%BF%E3%83%BC%E3%81%AE%E8%A8%AD%E5%AE%9A) を参照してください。
+
+## [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%83%A1%E3%82%BF%E3%83%87%E3%83%BC%E3%82%BF) メタデータ
+
+### [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%82%AB%E3%83%A9%E3%83%BC%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E) カラースキーマ
+
+デフォルトでは、Slidevはライトモードとダークモードの両方をサポートするテーマを想定しています。もしデザインされたカラースキーマだけでテーマを表示したいなら、 `package.json` で明示的に指定する必要があります。
+
+```
+// package.json
+{
+  "name": "slidev-theme-my-cool-theme",
+  "keywords": [\
+    "slidev-theme",\
+    "slidev"\
+  ],
+  "slidev": {
+    "colorSchema": "light" // or "dark" or "both"
+  }
+}
+
+```
+
+テーマのスタイルを作成する際にダークモードにアクセスするには、ダークモード特有の設定を `dark` クラスで囲みます：
+
+```
+/* 全体に適用されるCSS */
+
+html:not(.dark) {
+  /* ライトモードのCSS */
+}
+
+html.dark {
+  /* ダークモードのCSS */
+}
+
+```
+
+Slidevはカラースキーマを切り替えるために、ページの `html` 要素の `dark` クラスを切り替えます。
+
+### [\#](https://ja.sli.dev/themes/write-a-theme.html\#%E3%82%B7%E3%83%B3%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B9%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88) シンタックスハイライト
+
+シンタックスハイライトの色もテーマで指定することができます。 [Prism](https://prismjs.com/) と [Shiki](https://github.com/shikijs/shiki) の両方をサポートしています。詳細は [シンタックスハイライトについてのドキュメント](https://ja.sli.dev/custom/highlighters) を参照してください。
+
+どちらかだけをサポートすることもできます。サンプルとして、デフォルトテーマを参照してください [`./styles/code.css`](https://github.com/slidevjs/slidev/blob/main/packages/create-theme/template/styles/code.css) / [`./setup/shiki.ts`](https://github.com/slidevjs/slidev/blob/main/packages/create-theme/template/setup/shiki.ts)
+
+また `package.json` でサポートしているシンタックスハイライトを指定することを忘れないでください。
+
+```
+// package.json
+{
+  "slidev": {
+    "highlighter": "shiki" // or "prism" or "all"
+  }
+}
+
+```
+
+### [\#](https://ja.sli.dev/themes/write-a-theme.html\#slidev%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3) Slidevのバージョン
+
+テーマが新しく追加されたSlidevの機能に依存している場合は、テーマが正しく動作するのに必要な最小のSlidevのバージョンを指定する必要があります。
+
+```
+// package.json
+{
+  "engines": {
+    "slidev": ">=0.19.3"
+  }
+}
+
+```
+
+ユーザーが指定されたバージョンよりも古いSlidevを使用している場合、例外が発生します。
+
+Slidevはまだ開発中です。APIや使い方はまだ確定ではありません。
+
